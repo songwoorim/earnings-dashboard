@@ -52,6 +52,20 @@ export function flowQuarters(items) {
     if (ytd2 && ytd3) out.set(ytd3.end, ytd3.val - ytd2.val);
     if (ytd3) out.set(fy.end, fy.val - ytd3.val);
   }
+
+  // 아직 끝나지 않은 올해(연간 값이 없는 회계연도)의 분기도 만들어요.
+  // 마지막 연간 기간이 끝난 다음 날부터 시작하는 누적 값을 찾아요.
+  const fyEnds = arr.filter((x) => x.d >= 350 && x.d <= 380).map((x) => x.end).sort();
+  const lastFyEnd = fyEnds[fyEnds.length - 1];
+  if (lastFyEnd) {
+    const same = arr.filter((x) => x.end > lastFyEnd && Math.abs(daysBetween(lastFyEnd, x.start)) <= 5);
+    const ytd1 = same.find((x) => x.d >= 80 && x.d <= 100);
+    const ytd2 = same.find((x) => x.d >= 170 && x.d <= 195);
+    const ytd3 = same.find((x) => x.d >= 260 && x.d <= 285);
+    if (ytd1) out.set(ytd1.end, ytd1.val);
+    if (ytd1 && ytd2) out.set(ytd2.end, ytd2.val - ytd1.val);
+    if (ytd2 && ytd3) out.set(ytd3.end, ytd3.val - ytd2.val);
+  }
   return out;
 }
 

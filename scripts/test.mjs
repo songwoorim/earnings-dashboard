@@ -2,7 +2,7 @@
 // (네트워크는 쓰지 않아요)  실행: npm run data:test
 import assert from "node:assert/strict";
 import { quarterLabel, lastContiguous } from "./lib/common.mjs";
-import { transformSec } from "./lib/sec.mjs";
+import { transformSec, flowQuarters } from "./lib/sec.mjs";
 import { readReport, transformDart } from "./lib/dart.mjs";
 
 // ---------- 공통 ----------
@@ -67,6 +67,20 @@ assert.equal(sec[7].q, "2025Q3");
 assert.equal(sec[0].assets, 1000);
 assert.equal(sec[0].debt, 56, "장기+유동+CP 합계");
 assert.equal(sec[7].debt, 68);
+
+// 진행 중인 회계연도(연간 값 없음)의 분기도 포함돼야 해요
+{
+  const f = (start, end, v) => ({ start, end, val: v * 1e6, filed: end });
+  const items = [
+    f("2024-10-01", "2024-12-31", 100), f("2024-10-01", "2025-03-31", 210),
+    f("2024-10-01", "2025-06-30", 330), f("2024-10-01", "2025-09-30", 460),
+    f("2025-10-01", "2025-12-31", 150), f("2025-10-01", "2026-03-31", 320),
+  ];
+  const q = flowQuarters(items);
+  assert.equal(q.get("2025-09-30"), 130e6, "끝난 연도의 Q4");
+  assert.equal(q.get("2025-12-31"), 150e6, "진행 중 연도 Q1");
+  assert.equal(q.get("2026-03-31"), 170e6, "진행 중 연도 Q2 = 반기-1분기");
+}
 
 // ---------- DART ----------
 const row = (sj, id, nm, thstrm, add) => ({ sj_div: sj, account_id: id, account_nm: nm, thstrm_amount: thstrm, thstrm_add_amount: add });
