@@ -25,6 +25,7 @@ scripts/                   데이터를 받아오는 스크립트 (GitHub 서버
 `index.html` 안에서 자주 만지게 될 곳:
 - 맨 위 `설정` : `ANALYSIS_ENDPOINT` (AI 분석 서버 주소, 3단계에서 연결)
 - `SAMPLE` : 샘플 회사 데이터
+- 화면 구성은 `renderInfo`(주요정보) · `renderFin`(재무) · `renderEarn`(실적) · `renderDiv`(배당) · `renderPeer`(동종업계) · `renderAnalyst`(애널리스트) 함수로 나뉘어 있어요
 - `GLOSSARY` : 용어 사전 (용어를 추가하면 화면 어디서든 `term("id")` 로 쓸 수 있어요)
 - 맨 위 `<style>` : 색상 · 글자 크기
 
@@ -73,5 +74,7 @@ GitHub Actions (매일 06:00 KST)
 
 - [x] 1단계: 샘플 데이터 화면 프로토타입 (토스 스타일 화이트)
 - [x] 2단계: 실제 데이터 연결 (SEC EDGAR / DART) ← 코드 완료, 첫 실행 확인 필요
+- [x] 화면 개편: 토스증권 종목정보 구성 (주요정보 · 재무 · 실적 · 배당 · 동종업계 · 애널리스트)
+- [ ] 시장 데이터 연결: 주가 · 시가총액 · PER/PSR/PBR · 배당 · 애널리스트 의견·목표주가 (화면에는 '연결 예정'으로 표시 중)
 - [ ] 3단계: AI 분석 자동 생성 (서버리스 함수 + `ANALYSIS_ENDPOINT`)
 - [ ] 4단계: 내 포트폴리오 · 실적 발표 일정

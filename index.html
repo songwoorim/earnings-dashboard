@@ -40,9 +40,9 @@ h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; cursor: pointer; }
 button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .num { font-variant-numeric: tabular-nums; }
-.app { max-width: 600px; min-height: 100vh; margin: 0 auto; background: var(--bg); }
-.block { padding: 24px var(--gutter-r) 24px var(--gutter); min-width: 0; }
-.block + .block { border-top: 8px solid var(--bg-sub); }
+.app { max-width: 720px; min-height: 100vh; margin: 0 auto; background: var(--bg); }
+.block { padding: 24px var(--gutter-r) 8px var(--gutter); min-width: 0; }
+.block + .block { padding-top: 20px; }
 .block-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
 .block-sub { font-size: 0.85rem; color: var(--text3); margin-bottom: 16px; }
 
@@ -105,11 +105,11 @@ button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px 
 .seg { display: flex; background: var(--bg-sub); border-radius: 12px; padding: 4px; gap: 4px; margin: 12px 0 16px; }
 .seg button { flex: 1; border: none; background: none; padding: 8px 4px; border-radius: 9px; font-size: 0.85rem; font-weight: 600; color: var(--text3); }
 .seg button.on { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(25, 31, 40, 0.1); }
-.chart-box { position: relative; width: 100%; height: 280px; }
+.chart-box { position: relative; width: 100%; height: 240px; }
 .chart-help { font-size: 0.86rem; color: var(--text2); background: var(--bg-sub); border-radius: var(--radius); padding: 14px 16px; margin-top: 12px; }
 
 .table-wrap { overflow-x: auto; margin: 0 calc(var(--gutter-r) * -1) 0 calc(var(--gutter) * -1); }
-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; min-width: 640px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
 th, td { padding: 11px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--bg-sub); font-variant-numeric: tabular-nums; }
 thead th { color: var(--text3); font-weight: 600; background: var(--bg); }
 th.sticky { position: sticky; left: 0; text-align: left; background: var(--bg); font-weight: 500; padding-left: var(--gutter); z-index: 1; }
@@ -139,6 +139,84 @@ td.neg { color: var(--down); }
   .sheet { animation: rise 0.22s ease-out; }
   @keyframes rise { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 }
+
+/* ===== 토스증권 종목정보 스타일 추가분 ===== */
+.co-head { padding: 12px var(--gutter-r) 8px var(--gutter); }
+.co-name { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; }
+.co-meta { margin-top: 2px; font-size: 0.85rem; color: var(--text3); }
+.co-about { margin-top: 10px; font-size: 0.9rem; color: var(--text2); }
+.co-asof { margin: 18px 0 8px; font-size: 0.78rem; color: var(--text3); }
+
+.stat-card { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--bg-sub); border-radius: var(--radius); padding: 16px 0; }
+.stat { padding: 0 14px; border-left: 1px solid var(--line); min-width: 0; }
+.stat:first-child { border-left: none; }
+.stat-l { font-size: 0.76rem; color: var(--text3); }
+.stat-v { margin-top: 4px; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.stat-s { margin-top: 2px; font-size: 0.72rem; font-weight: 600; }
+.stat-s .m { display: block; color: var(--text3); font-weight: 400; }
+.soon { font-size: 0.82rem; font-weight: 500; color: var(--text3); }
+.gap-top { margin-top: 14px; }
+
+.sec { margin-top: 32px; }
+.sec-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+.sec-title small { margin-left: 8px; font-size: 0.8rem; font-weight: 400; color: var(--text3); }
+.sec-sentence { margin-top: 6px; font-size: 0.88rem; color: var(--text2); }
+.sec-sentence b { font-weight: 700; color: var(--text); }
+.sel-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+.sel {
+  appearance: none; -webkit-appearance: none; border: none; background-color: var(--bg-sub);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%238b95a1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; color: var(--text);
+  font: inherit; font-size: 0.84rem; font-weight: 500; padding: 7px 28px 7px 12px; border-radius: 10px; cursor: pointer;
+}
+.seg-sm { display: inline-flex; margin: 0; }
+.seg-sm button { flex: none; padding: 7px 12px; }
+.unit { margin: 0 0 6px; font-size: 0.76rem; color: var(--text3); text-align: right; }
+
+.dt thead th { font-weight: 500; }
+.dt tbody th.sticky { font-weight: 500; color: var(--text); min-width: 128px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--c); margin-right: 8px; vertical-align: -1px; }
+.sw.ring { background: transparent; border: 2px solid var(--c); }
+
+.plain { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.plain th, .plain td { text-align: left; white-space: normal; padding: 12px 0; border-bottom: 1px solid var(--bg-sub); font-size: 0.88rem; font-weight: 400; }
+.plain thead th { color: var(--text3); font-size: 0.78rem; font-weight: 500; }
+.plain th:not(:first-child), .plain td:not(:first-child) { text-align: right; padding-left: 8px; }
+
+.info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; margin-top: 16px; }
+@media (min-width: 560px) { .info-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.info-l { font-size: 0.78rem; color: var(--text3); }
+.info-v { margin-top: 2px; font-size: 0.92rem; font-weight: 500; overflow-wrap: anywhere; }
+
+.mcard { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--bg-sub); border-radius: var(--radius); padding: 16px 0; margin-top: 12px; }
+.mcol { padding: 0 14px; border-left: 1px solid var(--line); min-width: 0; }
+.mcol:first-child { border-left: none; }
+.mcol h3 { font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; }
+.mcol h3 small { display: block; font-weight: 400; color: var(--text3); font-size: 0.7rem; }
+.mrow { display: flex; justify-content: space-between; gap: 6px; font-size: 0.8rem; padding: 3px 0; }
+.mrow > span:first-child { color: var(--text3); }
+.mrow .v { font-weight: 600; }
+.mrow .v.na { color: var(--text3); font-weight: 400; }
+.note-small { margin-top: 10px; font-size: 0.76rem; color: var(--text3); }
+
+.empty-card { display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-sub); border-radius: var(--radius); padding: 36px 20px; text-align: center; color: var(--text3); font-size: 0.88rem; margin-top: 12px; }
+.empty-card svg { opacity: 0.8; }
+.easy-note { margin-top: 14px; background: var(--blue-soft); color: var(--blue-deep); border-radius: var(--radius); padding: 12px 14px; font-size: 0.84rem; }
+.easy-note strong { margin-right: 8px; }
+.easy-note .term-btn { text-decoration-color: var(--blue-deep); }
+
+.peer-metric { margin-top: 26px; }
+.peer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.peer-head h3 { font-size: 0.95rem; font-weight: 700; }
+.peer-head h3 small { margin-left: 6px; font-weight: 400; color: var(--text3); font-size: 0.76rem; }
+.peer-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 64px; align-items: center; gap: 10px; padding: 6px 0; font-size: 0.85rem; }
+.peer-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text2); }
+.peer-row.me .peer-name { color: var(--text); font-weight: 700; }
+.bar-track { display: block; height: 10px; background: var(--bg-sub); border-radius: 6px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: #cbd2d9; border-radius: 6px; }
+.peer-row.me .bar-fill { background: var(--blue); }
+.bar-fill.neg { opacity: 0.55; }
+.peer-val { text-align: right; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -218,6 +296,20 @@ var SAMPLE = [
    용어 사전 (입문자용). 화면 어디서든 용어를 누르면 쉬운 설명이 올라와요.
    ===================================================================== */
 var GLOSSARY = {
+  marketCap: { term: "시가총액", easy: "주식 한 주 가격에 발행된 주식 수를 곱한 값이에요. 시장이 그 회사 전체를 얼마로 평가하는지 보여줘요.", example: "한 주 1만 원 × 1억 주 = 시가총액 1조 원.", formula: "주가 × 발행 주식 수" },
+  per: { term: "PER (주가수익비율)", easy: "주가가 1년 이익의 몇 배인지 보는 지표예요. 낮으면 이익에 비해 주가가 싼 편, 높으면 비싼 편이에요. 적자 회사는 마이너스로 나와요.", example: "주가 1만 원, 한 주당 이익 1천 원이면 PER 10배.", formula: "주가 ÷ 주당순이익(EPS)" },
+  psr: { term: "PSR (주가매출비율)", easy: "주가가 1년 매출의 몇 배인지 보는 지표예요. 아직 이익이 없는 성장 기업을 볼 때 많이 써요.", example: "시가총액 1조 원, 매출 1천억 원이면 PSR 10배.", formula: "시가총액 ÷ 매출액" },
+  pbr: { term: "PBR (주가순자산비율)", easy: "주가가 회사 순자산(자본)의 몇 배인지 보는 지표예요. 1배보다 낮으면 장부상 재산보다 싸게 거래된다는 뜻이에요.", example: "시가총액 1조 원, 자본 2조 원이면 PBR 0.5배.", formula: "시가총액 ÷ 자본" },
+  eps: { term: "EPS (주당순이익)", easy: "회사가 번 순이익을 주식 수로 나눈 값이에요. 주식 한 주가 1년 동안 벌어들인 이익이라고 보면 돼요.", example: "순이익 100억 원, 주식 1천만 주면 EPS 1,000원.", formula: "순이익 ÷ 발행 주식 수" },
+  bps: { term: "BPS (주당순자산)", easy: "회사 순자산(자본)을 주식 수로 나눈 값이에요. 회사 재산을 주식 수대로 나눴을 때 한 주 몫의 기준이에요.", example: "자본 1,000억 원, 주식 1천만 주면 BPS 10,000원.", formula: "자본 ÷ 발행 주식 수" },
+  roe: { term: "ROE (자기자본이익률)", easy: "내 돈(자본) 100원으로 1년에 몇 원을 벌었는지 보여줘요. 높을수록 자본을 효율적으로 쓰는 회사예요. 이 앱에서는 최근 4분기 순이익 합계를 현재 자본으로 나눠 계산해요.", example: "자본 1,000억 원으로 순이익 150억 원을 벌면 ROE 15%.", formula: "최근 4분기 순이익 ÷ 자본 × 100" },
+  currentRatio: { term: "유동비율", easy: "1년 안에 갚아야 할 빚(유동부채)을 1년 안에 현금이 될 자산(유동자산)으로 얼마나 갚을 수 있는지 보여줘요. 보통 100%를 넘으면 단기 상환 걱정이 적어요.", example: "유동자산 2억, 유동부채 1억이면 유동비율 200%.", formula: "유동자산 ÷ 유동부채 × 100" },
+  interestCover: { term: "이자보상비율", easy: "본업으로 번 돈(영업이익)이 1년 이자 비용의 몇 배인지 보여줘요. 1배보다 낮으면 번 돈으로 이자도 못 낸다는 뜻이에요.", example: "영업이익 10억, 이자 비용 2억이면 5배.", formula: "영업이익 ÷ 이자비용" },
+  dividendYield: { term: "배당수익률", easy: "주가 대비 1년 동안 받은 배당금 비율이에요. 은행 이자처럼 주식을 갖고만 있어도 받는 수익이에요.", example: "주가 1만 원에 연 배당금 300원이면 3%.", formula: "1년 배당금 ÷ 주가 × 100" },
+  consensus: { term: "예상치 (컨센서스)", easy: "여러 애널리스트가 이번 분기 매출·이익을 이 정도로 예상한다는 평균이에요. 실제 발표가 예상보다 좋은지 나쁜지가 주가에 큰 영향을 줘요.", example: "예상 매출 10조 원, 발표 매출 11조 원이면 예상보다 좋은 실적." },
+  surprise: { term: "서프라이즈", easy: "실제 발표 실적이 예상치와 얼마나 달랐는지 보여줘요. 예상보다 좋으면 어닝 서프라이즈, 나쁘면 어닝 쇼크라고 불러요.", example: "예상 100, 발표 112면 서프라이즈 +12%.", formula: "(발표치 − 예상치) ÷ 예상치 × 100" },
+  targetPrice: { term: "목표주가", easy: "애널리스트가 1년 뒤 적정하다고 보는 주가예요. 참고용이고 틀리는 경우도 많아서 현재 주가와 실적을 같이 봐야 해요." },
+  growth: { term: "성장률", easy: "지난 분기보다 얼마나 늘거나 줄었는지를 %로 나타낸 값이에요. 이 앱에서는 빨강이 늘어난 것, 파랑이 줄어든 것이에요.", example: "매출이 100에서 120이 되면 성장률 +20%.", formula: "(이번 − 직전) ÷ |직전| × 100" },
   revenue: { term: "매출액", easy: "회사가 물건이나 서비스를 팔아서 번 돈의 총합이에요. 아직 비용을 빼기 전 금액입니다.", example: "치킨집이 한 달 동안 손님에게 받은 돈이 3천만 원이면 매출은 3천만 원." },
   op: { term: "영업이익", easy: "본업으로 번 돈에서 재료비·인건비·광고비 같은 본업 비용을 뺀 이익이에요. 회사의 '진짜 실력'을 볼 때 가장 많이 봅니다.", example: "매출 3천만 원 − 본업 비용 2천5백만 원 = 영업이익 5백만 원." },
   net: { term: "순이익", easy: "세금, 이자, 기타 손익까지 모두 반영하고 최종적으로 회사에 남은 돈이에요. 주주 몫의 최종 성적표입니다.", example: "영업이익 5백만 원에서 이자·세금을 내고 3백5십만 원이 남았다면 순이익은 3백5십만 원." },
@@ -394,18 +486,134 @@ function getAnalysis(c) {
 }
 
 /* =====================================================================
-   화면 그리기
+   화면 그리기  (토스증권 종목정보 구성: 주요정보 · 재무 · 실적 · 배당 · 동종업계 · 애널리스트)
+   데이터가 아직 없는 항목은 '연결 예정'으로 보여줘요.
    ===================================================================== */
-var state = { data: null, company: null, rows: [], tab: "summary", chartTab: "profit" };
-var chart = null;
+var TABS = [["info", "주요정보"], ["fin", "재무"], ["earn", "실적"], ["div", "배당"], ["peer", "동종업계"], ["analyst", "애널리스트"], ["gloss", "용어"]];
+var state = { data: null, company: null, rows: [], tab: "info", range: 8, stmt: "is", metric: "debt", divRange: 3 };
+var charts = [];
 var $ = function (s) { return document.querySelector(s); };
 
+var SOON = '<span class="soon">연결 예정</span>';
+var BARS_ICON = '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="11" width="4" height="9" rx="1.2" fill="currentColor"/><rect x="9" y="6" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="16" y="2" width="4" height="18" rx="1.2" fill="currentColor"/></svg>';
+var C = { blue: "#3182f6", green: "#00b386", orange: "#ff9500", purple: "#9b51e0", teal: "#12a8a0", deepTeal: "#1f6f6f", lightTeal: "#2ba8a8", gray: "#d1d6db" };
+
+/* ---------- 작은 도우미 ---------- */
 function term(id, label) {
   var g = GLOSSARY[id];
   var text = label == null ? (g ? g.term : "") : label;
   return g ? '<button type="button" class="term-btn" data-term="' + id + '">' + esc(text) + "</button>" : esc(text);
 }
+function shortName(n) { return String(n).replace(/\s*\(샘플\)/, ""); }
+// 분기 종료월 기준 이름: "25년 6월"
+function periodLabel(r) {
+  var y, m;
+  if (r.periodEnd) { y = +r.periodEnd.slice(0, 4); m = +r.periodEnd.slice(5, 7); }
+  else { var mm = /^(\d{4})Q([1-4])$/.exec(r.q); if (!mm) return r.q; y = +mm[1]; m = +mm[2] * 3; }
+  return String(y).slice(2) + "년 " + m + "월";
+}
+function periodShort(r) { var s = periodLabel(r).replace("년 ", "."); var p = s.split("."); return p[0] + "." + String(p[1].replace("월", "")).padStart(2, "0"); }
+function qText(q) { var mm = /^(\d{4})Q([1-4])$/.exec(q); return mm ? mm[1] + "년 " + mm[2] + "분기" : q; }
+function trim1(n) { return String(Math.round(n * 10) / 10); }
+function fmtAxis(v, c) {
+  var a = Math.abs(v), s = v < 0 ? "-" : "";
+  if (c.market === "US") return a >= 1000 ? s + "$" + trim1(a / 1000) + "B" : s + "$" + Math.round(a) + "M";
+  return a >= 10000 ? s + trim1(a / 10000) + "조" : s + Math.round(a).toLocaleString() + "억";
+}
+// 직전 분기 대비 증감률(%). 빨강=늘어남, 파랑=줄어듦 (한국 증시 관례)
+function qoqG(rows, i, key) {
+  if (i < 1) return null;
+  var p = rows[i - 1][key];
+  if (!p) return null;
+  return ((rows[i][key] - p) / Math.abs(p)) * 100;
+}
+function gCell(v) {
+  if (v == null || isNaN(v)) return "-";
+  return '<span class="' + (v > 0 ? "up" : v < 0 ? "down" : "") + '">' + v.toFixed(2) + "%</span>";
+}
+function emptyCard(text) { return '<div class="empty-card">' + BARS_ICON + "<p>" + esc(text) + "</p></div>"; }
+function statCard(cells) {
+  return '<div class="stat-card">' + cells.map(function (c) {
+    return '<div class="stat"><div class="stat-l">' + c.label + '</div><div class="stat-v num">' + c.value + "</div>" + (c.sub || "") + "</div>";
+  }).join("") + "</div>";
+}
+function secHead(title, sub) { return '<h2 class="sec-title">' + esc(title) + (sub ? "<small>" + esc(sub) + "</small>" : "") + "</h2>"; }
+function sel(key, label, opts, value) {
+  return '<select class="sel" data-sel="' + key + '" aria-label="' + esc(label) + '">' + opts.map(function (o) {
+    return '<option value="' + o[0] + '"' + (String(o[0]) === String(value) ? " selected" : "") + (o[2] ? " disabled" : "") + ">" + esc(o[1]) + "</option>";
+  }).join("") + "</select>";
+}
+function rangeSel() { return '<div class="sel-row">' + sel("range", "기간", [[4, "1년"], [8, "2년"]], state.range) + "</div>"; }
+function chartBox(id) { return '<div class="chart-box"><canvas id="' + id + '" role="img" aria-label="분기별 추이 차트"></canvas></div>'; }
+function easyNote(html) { return '<p class="easy-note"><strong>쉽게 읽기</strong>' + html + "</p>"; }
 
+// 토스처럼 "일시" 열 머리 + 범례 색 표시가 붙은 표
+function dTable(vis, defs) {
+  var head = '<tr><th class="sticky">일시</th>' + vis.map(function (r) { return "<th>" + esc(periodLabel(r)) + "</th>"; }).join("") + "</tr>";
+  var body = defs.map(function (d) {
+    var lab = (d.sw ? '<span class="sw ' + d.sw + '" style="--c:' + d.color + '"></span>' : "") + (d.term ? term(d.term, d.label) : esc(d.label));
+    var cells = vis.map(function (r, j) {
+      if (d.html) return "<td>" + d.html(r, j) + "</td>";
+      var v = d.val(r);
+      return "<td" + (d.neg && typeof v === "number" && v < 0 ? ' class="neg"' : "") + ">" + esc(d.fmt(v)) + "</td>";
+    }).join("");
+    return '<tr><th class="sticky" scope="row">' + lab + "</th>" + cells + "</tr>";
+  }).join("");
+  return '<div class="table-wrap"><table class="dt" style="min-width:' + (130 + vis.length * 92) + 'px"><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
+}
+
+/* ---------- 차트 (막대 + 선, 범례는 표에 있어요) ---------- */
+function mkChart(id, vis, bars, lines) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var c = state.company;
+  var ds = bars.map(function (b) {
+    return { type: "bar", label: b.label, data: vis.map(function (r) { return r[b.key]; }), backgroundColor: b.color, borderRadius: 3, barPercentage: 0.85, categoryPercentage: 0.72, yAxisID: "y", order: 2 };
+  }).concat(lines.map(function (l) {
+    return { type: "line", label: l.label, data: vis.map(function (r) { return r[l.key]; }), borderColor: l.color, backgroundColor: "#fff", pointBackgroundColor: "#fff", pointBorderColor: l.color, pointBorderWidth: 2, pointRadius: 4, borderWidth: 2, tension: 0, yAxisID: "y2", order: 1 };
+  }));
+  var tick = { color: "#8b95a1", font: { size: 11 }, maxRotation: 0 };
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  charts.push(new Chart(el, {
+    type: "bar",
+    data: { labels: vis.map(periodShort), datasets: ds },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function (ctx) {
+          var v = ctx.parsed.y;
+          return ctx.dataset.label + ": " + (v == null ? "-" : ctx.dataset.yAxisID === "y2" ? v.toFixed(1) + "%" : fmtAmount(v, c));
+        } } }
+      },
+      scales: {
+        x: { grid: { display: false }, border: { display: false }, ticks: tick },
+        y: { position: "right", border: { display: false }, grid: { color: function (g) { return g.tick && g.tick.value === 0 ? "#c5ccd3" : "#f2f4f6"; } }, ticks: { color: "#8b95a1", font: { size: 11 }, callback: function (v) { return fmtAxis(v, c); } } },
+        y2: { display: false }
+      }
+    }
+  }));
+}
+function drawCharts() {
+  charts.forEach(function (ch) { ch.destroy(); });
+  charts = [];
+  var boxes = document.querySelectorAll(".chart-box");
+  if (!boxes.length) return;
+  if (typeof Chart === "undefined") {
+    boxes.forEach(function (b) { b.innerHTML = '<p class="empty">차트를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</p>'; });
+    return;
+  }
+  var vis = state.rows.slice(-state.range);
+  if (state.tab === "fin") {
+    mkChart("ch-profit", vis, [{ label: "매출", key: "revenue", color: C.blue }, { label: "순이익", key: "net", color: C.green }], [{ label: "순이익률", key: "netMargin", color: C.orange }]);
+    mkChart("ch-growth", vis, [{ label: "영업이익", key: "op", color: C.purple }], [{ label: "영업이익률", key: "opMargin", color: C.teal }]);
+    mkChart("ch-safe", vis, [{ label: "총자본", key: "equity", color: C.deepTeal }, { label: "총부채", key: "liab", color: C.lightTeal }], [{ label: "부채비율", key: "debtRatio", color: C.orange }]);
+  } else if (state.tab === "earn") {
+    mkChart("ch-earn", vis, [{ label: "발표치", key: "revenue", color: C.blue }], []);
+  }
+}
+
+/* ---------- 상단 ---------- */
 function renderTop() {
   var live = state.data.source === "live";
   return '<header class="top"><span class="brand">실적 번역기</span>' +
@@ -414,24 +622,36 @@ function renderTop() {
 function renderChips() {
   return '<nav class="chips-scroll" aria-label="기업 선택">' + state.data.companies.map(function (c) {
     return '<button class="company-chip' + (c.id === state.company.id ? " on" : "") + '" data-company="' + esc(c.id) + '" aria-pressed="' + (c.id === state.company.id) + '">' +
-      esc(c.name.replace(/\s*\(샘플\)/, "")) + "<small>" + (c.market === "US" ? "미국" : "한국") + "</small></button>";
+      esc(shortName(c.name)) + "<small>" + (c.market === "US" ? "미국" : "한국") + "</small></button>";
   }).join("") + "</nav>";
 }
-function renderHero() {
-  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i], g = yoy(rows, i, "revenue");
-  return '<section class="hero" aria-label="요약"><p class="hero-meta">' + (c.market === "US" ? "미국" : "한국") + " · " + esc(c.id) + " · " + esc(c.sector) + "</p>" +
-    '<p class="hero-label">' + esc(last.q) + " " + term("revenue") + "</p>" +
-    '<p class="hero-value num">' + esc(fmtAmount(last.revenue, c)) + "</p>" +
-    (g != null ? '<p class="hero-delta num"><span class="base">1년 전보다</span><span class="' + (g > 0 ? "up" : "down") + '">' + fmtDelta(g) + "</span></p>" : "") +
-    '<p class="hero-about">' + esc(c.about) + "</p></section>";
+function renderHead() {
+  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i];
+  var d = function (key) {
+    var v = yoy(rows, i, key), t = fmtDelta(v);
+    return t ? '<div class="stat-s num ' + (v > 0 ? "up" : "down") + '">' + t + ' <span class="m">전년 동기</span></div>' : "";
+  };
+  return '<section class="co-head"><h1 class="co-name">' + esc(shortName(c.name)) + '</h1><p class="co-meta">' + (c.market === "US" ? "미국" : "한국") + " · " + esc(c.id) + " · " + esc(c.sector) + "</p>" +
+    '<p class="co-about">' + esc(c.about) + "</p>" +
+    '<p class="co-asof">' + esc(qText(last.q)) + " 실적 기준</p>" +
+    statCard([
+      { label: term("revenue"), value: esc(fmtAmount(last.revenue, c)), sub: d("revenue") },
+      { label: term("op"), value: esc(fmtAmount(last.op, c)), sub: d("op") },
+      { label: term("net"), value: esc(fmtAmount(last.net, c)), sub: d("net") }
+    ]) + "</section>";
 }
 function renderTabs() {
-  var tabs = [["summary", "요약"], ["chart", "차트"], ["statements", "재무제표"], ["glossary", "용어"]];
-  return '<div class="tabs" role="tablist">' + tabs.map(function (t) {
+  return '<div class="tabs" role="tablist">' + TABS.map(function (t) {
     return '<button class="tab' + (state.tab === t[0] ? " on" : "") + '" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-tab="' + t[0] + '">' + t[1] + "</button>";
   }).join("") + "</div>";
 }
 
+/* ---------- 주요정보 ---------- */
+function mcol(title, sub, items) {
+  return '<div class="mcol"><h3>' + title + (sub ? "<small>" + sub + "</small>" : "") + "</h3>" + items.map(function (it) {
+    return '<div class="mrow"><span>' + (it[2] ? term(it[2], it[0]) : esc(it[0])) + '</span><span class="v num' + (it[1] == null ? " na" : "") + '">' + (it[1] == null ? "-" : esc(it[1])) + "</span></div>";
+  }).join("") + "</div>";
+}
 function renderKpi() {
   var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i];
   var opYoy = yoy(rows, i, "op");
@@ -441,21 +661,108 @@ function renderKpi() {
     { id: "fcf", value: fmtAmount(last.fcf, c), easy: easyReading("fcf", last) },
     { id: "net", value: fmtAmount(last.net, c), easy: "세금과 이자까지 낸 뒤 최종으로 남은 돈이에요" }
   ];
-  return '<section class="block" aria-label="핵심 지표"><h2 class="block-title">' + esc(last.q) + ' 핵심 지표</h2><p class="block-sub">용어를 누르면 쉬운 설명이 나와요</p><div class="metric-list">' +
+  return '<section class="block" aria-label="핵심 지표 쉽게 보기">' + secHead("핵심 지표 쉽게 보기", qText(last.q)) + '<div class="metric-list">' +
     items.map(function (m) {
       return '<div class="metric"><div class="metric-left"><div class="metric-name">' + term(m.id) + '</div><div class="metric-easy">' + esc(m.easy) + "</div></div>" +
         '<div class="metric-right"><div class="metric-value num">' + esc(m.value) + "</div>" +
         (m.delta ? '<div class="metric-delta num ' + (m.up ? "up" : "down") + '">' + m.delta + "</div>" : "") + "</div></div>";
     }).join("") + "</div></section>";
 }
+function renderInfo() {
+  var c = state.company, rows = state.rows, last = rows[rows.length - 1];
+  var ttm = rows.length >= 4 ? rows.slice(-4).reduce(function (s, r) { return s + r.net; }, 0) : null;
+  var roe = ttm != null && last.equity > 0 ? (ttm / last.equity) * 100 : null;
+  var info = [["시가총액", "marketCap", null], ["기업명", null, c.nameEn || c.name], ["업종", null, c.sector], ["상장일", null, null], ["발행주식수", null, null], ["대표이사", null, null]];
+  var grid = info.map(function (x) {
+    return "<div><div class=\"info-l\">" + (x[1] ? term(x[1], x[0]) : esc(x[0])) + '</div><div class="info-v">' + (x[2] == null ? SOON : esc(x[2])) + "</div></div>";
+  }).join("");
+  var live = state.data.source === "live";
+  return '<section class="block" aria-label="기업 정보">' + secHead("기업 정보") + '<div class="info-grid">' + grid + "</div>" +
+    '<div class="sec">' + secHead("매출구성", "사업별 비중") + emptyCard("사업별 매출 비중은 연결 예정이에요") + "</div>" +
+    '<div class="sec">' + secHead("주요 사업") + '<table class="plain"><thead><tr><th>산업</th><th>시가총액 순위</th></tr></thead><tbody><tr><td>' + esc(c.sector) + "</td><td>" + SOON + "</td></tr></tbody></table></div>" +
+    '<div class="sec">' + secHead("투자 지표", live ? fmtDate(state.data.updatedAt) + " 기준" : "샘플") +
+    '<div class="mcard">' +
+    mcol("가치평가", "", [["PER", null, "per"], ["PSR", null, "psr"], ["PBR", null, "pbr"]]) +
+    mcol("수익", "", [["EPS", null, "eps"], ["BPS", null, "bps"], ["ROE", roe == null ? null : fmtPct(roe, 1), "roe"]]) +
+    mcol("배당", "최근 12개월", [["횟수", null, null], ["주당 배당금", null, null], ["수익률", null, "dividendYield"]]) +
+    '</div><p class="note-small">"-" 표시는 주가·주식 수·배당 데이터가 연결되면 채워져요. ROE는 재무제표만으로 계산했어요.</p></div></section>' + renderKpi();
+}
 
+/* ---------- 재무 ---------- */
+var STMT = {
+  is: [["revenue", "revenue"], ["op", "op"], ["net", "net"], ["opMargin", "opMargin", "pct"], ["netMargin", "netMargin", "pct"]],
+  bs: [["assets", "assets"], ["liab", "liab"], ["equity", "equity"], ["debtRatio", "debtRatio", "pct"], [null, "cash", "", "현금"], [null, "debt", "", "차입금"], ["netDebt", "netDebt"]],
+  cf: [["ocf", "ocf"], ["capex", "capex"], ["fcf", "fcf"]]
+};
+function renderFin() {
+  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i];
+  var vis = rows.slice(-state.range), off = rows.length - vis.length, name = shortName(c.name), q = qText(last.q);
+  var amt = function (v) { return fmtAmount(v, c); };
+  var growthWord = function (g) { return Math.abs(g).toFixed(2) + "%</b> 더 " + (g >= 0 ? "높아요" : "낮아요"); };
+
+  var top = statCard([
+    { label: term("debtRatio"), value: last.debtRatio == null ? "-" : fmtPct(last.debtRatio, 2) },
+    { label: term("currentRatio"), value: SOON },
+    { label: term("interestCover"), value: SOON }
+  ]);
+
+  var gNet = qoqG(rows, i, "net");
+  var profit = '<div class="sec">' + secHead("수익성", "매출·순이익 성장률") +
+    (gNet == null ? "" : '<p class="sec-sentence">' + esc(q) + " " + esc(name) + "의 순이익은 <b>" + esc(amt(last.net)) + "</b>으로 직전 분기 대비 <b>" + growthWord(gNet) + ".</p>") +
+    rangeSel() + chartBox("ch-profit") +
+    dTable(vis, [
+      { label: "매출", term: "revenue", sw: "sq", color: C.blue, val: function (r) { return r.revenue; }, fmt: amt },
+      { label: "순이익", term: "net", sw: "sq", color: C.green, val: function (r) { return r.net; }, fmt: amt },
+      { label: "순이익률", term: "netMargin", sw: "ring", color: C.orange, val: function (r) { return r.netMargin; }, fmt: function (v) { return fmtPct(v, 2); } },
+      { label: "순이익 성장률", term: "growth", html: function (r, j) { return gCell(qoqG(rows, off + j, "net")); } }
+    ]) +
+    easyNote("매출이 늘어도 순이익이 줄면 비용이 매출보다 빠르게 늘고 있다는 뜻이에요. 표의 " + term("growth", "성장률") + "은 빨강이 늘어난 것, 파랑이 줄어든 것이에요.") + "</div>";
+
+  var gOp = qoqG(rows, i, "op");
+  var growth = '<div class="sec">' + secHead("성장성", "영업이익 성장률") +
+    (gOp == null ? "" : '<p class="sec-sentence">' + esc(q) + " " + esc(name) + "의 영업이익은 <b>" + esc(amt(last.op)) + "</b>으로 직전 분기 대비 <b>" + growthWord(gOp) + ".</p>") +
+    rangeSel() + chartBox("ch-growth") +
+    dTable(vis, [
+      { label: "영업이익", term: "op", sw: "sq", color: C.purple, val: function (r) { return r.op; }, fmt: amt },
+      { label: "영업이익률", term: "opMargin", sw: "ring", color: C.teal, val: function (r) { return r.opMargin; }, fmt: function (v) { return fmtPct(v, 2); } },
+      { label: "영업이익 성장률", term: "growth", html: function (r, j) { return gCell(qoqG(rows, off + j, "op")); } }
+    ]) +
+    easyNote(term("op", "영업이익") + "은 본업으로 번 돈이에요. 순이익보다 회사의 본래 실력을 더 잘 보여줘요.") + "</div>";
+
+  var prevDebt = i >= 1 ? rows[i - 1].debtRatio : null;
+  var debtSentence = last.debtRatio == null ? "" : '<p class="sec-sentence">' + esc(q) + " " + esc(name) + "의 부채비율은 <b>" + fmtPct(last.debtRatio, 2) + "</b>" +
+    (prevDebt == null ? "" : "로 직전 분기보다 " + (last.debtRatio > prevDebt ? "높아졌어요" : last.debtRatio < prevDebt ? "낮아졌어요" : "같아요")) + ".</p>";
+  var safety = '<div class="sec">' + secHead("안정성", "부채·유동·이자보상비율") + debtSentence +
+    '<div class="sel-row">' + sel("metric", "지표", [["debt", "부채비율"], ["cur", "유동비율 (연결 예정)", 1], ["int", "이자보상비율 (연결 예정)", 1]], state.metric) + sel("range", "기간", [[4, "1년"], [8, "2년"]], state.range) + "</div>" +
+    chartBox("ch-safe") +
+    dTable(vis, [
+      { label: "총자본", term: "equity", sw: "sq", color: C.deepTeal, val: function (r) { return r.equity; }, fmt: amt },
+      { label: "총부채", term: "liab", sw: "sq", color: C.lightTeal, val: function (r) { return r.liab; }, fmt: amt },
+      { label: "부채비율", term: "debtRatio", sw: "ring", color: C.orange, val: function (r) { return r.debtRatio; }, fmt: function (v) { return fmtPct(v, 2); } }
+    ]) +
+    easyNote("부채비율이 낮을수록 빚 부담이 적어요. 보통 100% 아래면 안정적이고 200%를 넘으면 주의해서 봐요. 업종마다 기준은 달라요.") + "</div>";
+
+  var defs = STMT[state.stmt].map(function (x) {
+    var fmt = x[2] === "pct" ? function (v) { return fmtPct(v, 2); } : fmtNum;
+    return { label: x[3] || GLOSSARY[x[0]].term, term: x[0], val: function (r) { return r[x[1]]; }, fmt: fmt, neg: true };
+  });
+  var segs = [["is", "손익계산서"], ["bs", "재무상태표"], ["cf", "현금흐름표"]].map(function (s) {
+    return '<button type="button" class="' + (state.stmt === s[0] ? "on" : "") + '" data-stmt="' + s[0] + '">' + s[1] + "</button>";
+  }).join("");
+  var stmt = '<div class="sec">' + secHead("재무제표") + '<div class="sel-row"><div class="seg seg-sm">' + segs + "</div>" + sel("range", "기간", [[4, "1년"], [8, "2년"]], state.range) + "</div>" +
+    '<p class="unit">단위: ' + esc(c.unitLabel) + "</p>" + dTable(vis, defs) + "</div>";
+
+  return '<section class="block" aria-label="재무">' + secHead("재무") + '<div class="gap-top">' + top + "</div>" + profit + growth + safety + stmt + "</section>";
+}
+
+/* ---------- 실적 ---------- */
 function renderAnalysis() {
   var a = getAnalysis(state.company);
   if (a.loading) return '<section class="block"><p class="block-sub">분석 불러오는 중…</p></section>';
   if (a.error) return '<section class="block"><p class="block-sub">분석을 불러오지 못했어요: ' + esc(a.error) + "</p></section>";
   var v = { good: ["전반적으로 양호", "blue"], caution: ["주의해서 볼 점 있음", "warn"], bad: ["부진", "warn"] }[a.verdict] || ["전반적으로 양호", "blue"];
   var li = function (arr) { return arr.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join(""); };
-  return '<section class="block" aria-label="실적 분석"><div class="analysis-head"><h2 class="block-title">' + esc(a.quarter) + ' 실적 분석</h2><span class="pill ' + v[1] + '">' + v[0] + "</span></div>" +
+  return '<section class="block" aria-label="실적 분석"><div class="analysis-head"><h2 class="sec-title">' + esc(qText(a.quarter)) + ' 실적 분석</h2><span class="pill ' + v[1] + '">' + v[0] + "</span></div>" +
     '<p class="headline">' + esc(a.headline) + "</p>" +
     (a.isSample ? '<p class="notice">샘플 분석(목업)이에요. 이후 단계에서 AI 분석이 자동으로 생성돼요.</p>' : "") +
     (a.isAuto ? '<p class="notice">숫자만 보고 규칙으로 만든 자동 요약이에요. AI 분석은 다음 단계에서 붙여요.</p>' : "") +
@@ -464,85 +771,74 @@ function renderAnalysis() {
     '<div class="tip"><strong>입문자 팁</strong>' + esc(a.beginnerTip) + "</div>" +
     '<p class="disclaimer">투자 권유가 아닌 학습용 해설이에요. 투자 판단과 책임은 본인에게 있어요.</p></section>';
 }
+function renderEarn() {
+  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i];
+  var vis = rows.slice(-state.range), amt = function (v) { return fmtAmount(v, c); };
+  var top = statCard([
+    { label: "발표 날짜", value: SOON },
+    { label: term("eps", "예상 주당순이익"), value: SOON },
+    { label: term("consensus", "예상 매출"), value: SOON }
+  ]);
+  var rowsDef = [["revenue", "revenue", "매출액"], ["op", "op", "영업이익"], ["net", "net", "순이익"]];
+  var score = '<table class="plain"><thead><tr><th>항목</th><th>이번 분기</th><th>직전 분기 대비</th><th>전년 동기 대비</th></tr></thead><tbody>' + rowsDef.map(function (d) {
+    return "<tr><td>" + term(d[0], d[2]) + '</td><td class="num">' + esc(amt(last[d[1]])) + '</td><td class="num">' + gCell(qoqG(rows, i, d[1])) + '</td><td class="num">' + gCell(yoy(rows, i, d[1])) + "</td></tr>";
+  }).join("") + "</tbody></table>";
+  var g = yoy(rows, i, "revenue");
+  var sentence = g == null ? "" : '<p class="sec-sentence">최근 분기 매출은 <b>' + esc(amt(last.revenue)) + "</b>으로 1년 전보다 <b>" + Math.abs(g).toFixed(2) + "%</b> " + (g >= 0 ? "늘었어요" : "줄었어요") + ".</p>";
 
-var CHART_TABS = [["profit", "매출·이익"], ["cash", "현금 흐름"], ["safety", "재무 안정성"]];
-function renderChartTab() {
-  var help = {
-    profit: "연한 파랑 막대(" + term("revenue") + ")가 커질 때 진한 파랑 막대(" + term("op") + ")도 같이 커지면 좋은 신호예요. 검은 선은 " + term("opMargin") + "로, 100원 팔 때 남는 돈이에요.",
-    cash: "파랑(" + term("ocf") + ")이 회색(" + term("capex") + ")보다 높으면 " + term("fcf") + "(검은 선)가 플러스예요. 낮으면 모자란 돈을 빌리거나 모아둔 현금으로 메워야 해요.",
-    safety: "파란 선(현금)이 점선(차입금)보다 위에 있으면 " + term("netDebt") + "가 마이너스예요. 빚보다 현금이 많은 든든한 상태예요."
-  }[state.chartTab];
-  return '<section class="block" aria-label="차트"><h2 class="block-title">최근 ' + state.rows.length + '분기 추이</h2><div class="seg" role="tablist">' +
-    CHART_TABS.map(function (t) {
-      return '<button role="tab" class="' + (state.chartTab === t[0] ? "on" : "") + '" aria-selected="' + (state.chartTab === t[0]) + '" data-chart="' + t[0] + '">' + t[1] + "</button>";
-    }).join("") + '</div><div class="chart-box"><canvas id="chart" role="img" aria-label="분기별 추이 차트"></canvas></div><p class="chart-help">' + help + "</p></section>";
+  return '<section class="block" aria-label="실적">' + secHead("실적") + '<div class="gap-top">' + top + "</div>" +
+    '<div class="sec">' + secHead("이번 분기 성적표", qText(last.q)) + score + "</div></section>" +
+    renderAnalysis() +
+    '<section class="block">' + secHead("매출", "발표치 · 예상치") + sentence + rangeSel() + chartBox("ch-earn") +
+    dTable(vis, [
+      { label: "발표치", term: "revenue", sw: "sq", color: C.blue, val: function (r) { return r.revenue; }, fmt: amt },
+      { label: "예상치", term: "consensus", sw: "sq", color: C.gray, html: function () { return "-"; } },
+      { label: "서프라이즈", term: "surprise", html: function () { return "-"; } }
+    ]) + '<p class="note-small">예상치와 서프라이즈는 애널리스트 데이터가 연결되면 채워져요.</p>' +
+    '<div class="sec">' + secHead("예상 주당순이익") + emptyCard("예상 주당순이익은 연결 예정이에요") + "</div></section>";
 }
 
-function drawChart() {
-  if (chart) { chart.destroy(); chart = null; }
-  var canvas = $("#chart");
-  if (!canvas) return;
-  if (typeof Chart === "undefined") {
-    canvas.parentElement.innerHTML = '<p class="empty">차트를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</p>';
-    return;
-  }
-  var c = state.company, rows = state.rows;
-  var money = function (v) { return fmtAmount(v, c); };
-  var COL = { blue: "#3182f6", blueLight: "#b9d8ff", gray: "#b0b8c1", dark: "#191f28", mid: "#4e5968" };
-  var bar = function (label, key, color) { return { type: "bar", label: label, data: rows.map(function (r) { return r[key]; }), backgroundColor: color, borderRadius: 4, yAxisID: "y", order: 2 }; };
-  var line = function (label, key, color, o) {
-    return Object.assign({ type: "line", label: label, data: rows.map(function (r) { return r[key]; }), borderColor: color, backgroundColor: color, borderWidth: 2.5, pointRadius: 3, tension: 0, yAxisID: "y", order: 1 }, o || {});
-  };
-  var datasets, rightAxis = false;
-  if (state.chartTab === "profit") {
-    datasets = [bar("매출액", "revenue", COL.blueLight), bar("영업이익", "op", COL.blue), line("영업이익률", "opMargin", COL.dark, { yAxisID: "y1", borderWidth: 2 })];
-    rightAxis = true;
-  } else if (state.chartTab === "cash") {
-    datasets = [bar("영업현금흐름", "ocf", COL.blue), bar("설비투자", "capex", COL.gray), line("잉여현금흐름", "fcf", COL.dark, { borderWidth: 2 })];
-  } else {
-    datasets = [line("현금", "cash", COL.blue), line("차입금", "debt", COL.mid, { borderDash: [5, 4] })];
-  }
-  var tick = { color: "#8b95a1", font: { size: 11 }, maxRotation: 0 };
-  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
-  chart = new Chart(canvas, {
-    type: "bar",
-    data: { labels: rows.map(function (r) { return r.q.replace(/^20/, ""); }), datasets: datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8, font: { size: 12 }, color: "#4e5968", sort: function (a, b) { return a.datasetIndex - b.datasetIndex; } } },
-        tooltip: { callbacks: { label: function (ctx) { return ctx.dataset.label + ": " + (ctx.dataset.yAxisID === "y1" ? ctx.parsed.y.toFixed(1) + "%" : money(ctx.parsed.y)); } } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: tick, border: { display: false } },
-        y: { grid: { color: "#f2f4f6" }, border: { display: false }, ticks: Object.assign({ callback: money }, tick) },
-        y1: { display: rightAxis, position: "right", grid: { drawOnChartArea: false }, border: { display: false }, ticks: Object.assign({ callback: function (v) { return v + "%"; } }, tick) }
-      }
-    }
+/* ---------- 배당 · 애널리스트 ---------- */
+function renderDiv() {
+  return '<section class="block" aria-label="배당">' + secHead("배당", "최근 12개월") + '<div class="gap-top">' + statCard([
+    { label: "횟수", value: SOON }, { label: "주당 배당금", value: SOON }, { label: term("dividendYield", "수익률"), value: SOON }
+  ]) + "</div>" +
+    '<div class="sec">' + secHead("배당금 지급 내역") + '<p class="sec-sentence">지난 ' + state.divRange + "년 동안 지급한 주당배당금을 보여줄 거예요.</p>" +
+    '<div class="sel-row">' + sel("divRange", "기간", [[1, "1년"], [3, "3년"], [5, "5년"]], state.divRange) + "</div>" +
+    emptyCard("배당 데이터는 연결 예정이에요. SEC·DART 공시의 배당 정보를 다음 단계에서 가져올 거예요.") +
+    easyNote(term("dividendYield", "배당") + "은 회사가 번 돈의 일부를 주주에게 나눠주는 거예요. 이익을 키우는 데 쓰는 성장 기업은 배당이 없는 경우가 많아요.") + "</div></section>";
+}
+function renderAnalyst() {
+  return '<section class="block" aria-label="애널리스트 분석">' + secHead("애널리스트 구매 의견") +
+    '<p class="sec-sentence">증권사 애널리스트 몇 명이 구매·판매 의견을 냈는지 보여줄 거예요.</p>' + emptyCard("애널리스트 구매 의견은 연결 예정이에요") +
+    '<div class="sec">' + secHead("예상 목표주가") + '<p class="sec-sentence">애널리스트들이 1년 뒤 적정하다고 보는 주가의 최고·평균·최저를 보여줄 거예요.</p>' + emptyCard("예상 목표주가는 연결 예정이에요") + "</div>" +
+    easyNote(term("targetPrice", "목표주가") + "는 참고용이에요. 틀리는 경우도 많아서 실적과 재무 흐름을 함께 보는 게 좋아요.") + "</section>";
+}
+
+/* ---------- 동종업계 비교 (등록한 종목끼리) ---------- */
+function renderPeer() {
+  var list = state.data.companies.map(function (co) {
+    var rs = enrich(co.quarters), i = rs.length - 1, l = rs[i];
+    return { name: shortName(co.name), me: co.id === state.company.id, opMargin: l.opMargin, netMargin: l.netMargin, growth: yoy(rs, i, "revenue"), fcf: l.revenue ? (l.fcf / l.revenue) * 100 : null, debt: l.debtRatio };
   });
-}
-
-var SECTIONS = [
-  { title: "손익계산서 · 얼마나 벌었나", rows: [["revenue", "revenue"], ["op", "op"], ["net", "net"], ["opMargin", "opMargin", 1], ["netMargin", "netMargin", 1]] },
-  { title: "재무상태표 · 가진 것과 갚을 것", rows: [["assets", "assets"], ["liab", "liab"], ["equity", "equity"], ["debtRatio", "debtRatio", 0], [null, "cash", null, "현금"], [null, "debt", null, "차입금"], ["netDebt", "netDebt"]] },
-  { title: "현금흐름표 · 실제 들어온 현금", rows: [["ocf", "ocf"], ["capex", "capex"], ["fcf", "fcf"]] }
-];
-function renderStatements() {
-  var rows = state.rows, pctKeys = { opMargin: 1, netMargin: 1, debtRatio: 1 };
-  var head = "<tr><th class=\"sticky\">항목</th>" + rows.map(function (r) { return "<th>" + esc(r.q) + "</th>"; }).join("") + "</tr>";
-  var body = SECTIONS.map(function (s) {
-    return '<tbody><tr class="section-row"><td colspan="' + (rows.length + 1) + '">' + esc(s.title) + "</td></tr>" + s.rows.map(function (row) {
-      var id = row[0], key = row[1], digits = row[2], label = row[3];
-      return '<tr><th class="sticky" scope="row">' + (id ? term(id) : esc(label)) + "</th>" + rows.map(function (r) {
-        var v = r[key];
-        return '<td class="' + (typeof v === "number" && v < 0 ? "neg" : "") + '">' + (pctKeys[key] ? fmtPct(v, digits == null ? 1 : digits) : fmtNum(v)) + "</td>";
-      }).join("") + "</tr>";
-    }).join("") + "</tbody>";
+  if (list.length < 2) return '<section class="block">' + secHead("동종업계 비교") + emptyCard("비교할 종목이 더 필요해요. scripts/watchlist.json 에 종목을 추가해 보세요.") + "</section>";
+  var M = [["opMargin", "영업이익률", "opMargin", true], ["netMargin", "순이익률", "netMargin", true], ["growth", "매출 성장률", "yoy", true, "전년 동기 대비"], ["fcf", "현금 창출력", "fcf", true, "잉여현금흐름 ÷ 매출"], ["debt", "부채비율", "debtRatio", false, "낮을수록 좋아요"]];
+  var html = M.map(function (m) {
+    var k = m[0];
+    var arr = list.filter(function (x) { return x[k] != null && !isNaN(x[k]); }).sort(function (a, b) { return m[3] ? b[k] - a[k] : a[k] - b[k]; });
+    var max = arr.reduce(function (s, x) { return Math.max(s, Math.abs(x[k])); }, 0) || 1;
+    var me = arr.findIndex(function (x) { return x.me; });
+    return '<div class="peer-metric"><div class="peer-head"><h3>' + term(m[2], m[1]) + (m[4] ? "<small>" + esc(m[4]) + "</small>" : "") + "</h3>" +
+      (me < 0 ? "" : '<span class="pill' + (me === 0 ? " blue" : "") + '">' + arr.length + "개 중 " + (me + 1) + "위</span>") + "</div>" +
+      arr.map(function (x) {
+        return '<div class="peer-row' + (x.me ? " me" : "") + '"><span class="peer-name">' + esc(x.name) + '</span><span class="bar-track"><span class="bar-fill' + (x[k] < 0 ? " neg" : "") + '" style="width:' + Math.max(2, (Math.abs(x[k]) / max) * 100).toFixed(1) + '%"></span></span><span class="peer-val num">' + fmtPct(x[k], 1) + "</span></div>";
+      }).join("") + "</div>";
   }).join("");
-  return '<section class="block" aria-label="재무제표 표"><h2 class="block-title">재무제표 한눈에</h2><p class="block-sub">단위: ' + esc(state.company.unitLabel) +
-    ' · 옆으로 밀어서 볼 수 있어요</p><div class="table-wrap"><table><thead>' + head + "</thead>" + body + "</table></div></section>";
+  return '<section class="block" aria-label="동종업계 비교">' + secHead("동종업계 비교", "등록한 종목끼리") +
+    '<p class="sec-sentence">지금은 등록한 ' + list.length + "개 종목끼리 비교해요. 비율 지표라서 미국과 한국 종목도 그대로 비교할 수 있어요. 업종 전체 비교는 연결 예정이에요.</p>" + html + "</section>";
 }
 
+/* ---------- 용어 사전 ---------- */
 function glossItems(q) {
   q = (q || "").trim().toLowerCase();
   var items = Object.keys(GLOSSARY).filter(function (id) { var g = GLOSSARY[id]; return (g.term + g.easy).toLowerCase().indexOf(q) !== -1; });
@@ -554,23 +850,19 @@ function glossItems(q) {
   }).join("");
 }
 function renderGlossary() {
-  return '<section class="block" aria-label="용어 사전"><h2 class="block-title">용어 사전</h2><p class="block-sub">입문자 기준으로 풀어 썼어요</p>' +
-    '<input id="gloss-q" class="search" type="search" placeholder="용어 검색 (예: 부채, 현금)"><div id="gloss-list">' + glossItems("") + "</div></section>";
+  return '<section class="block" aria-label="용어 사전">' + secHead("용어 사전", "입문자 기준으로 풀어 썼어요") +
+    '<input id="gloss-q" class="search" type="search" placeholder="용어 검색 (예: 부채, 현금, PER)"><div id="gloss-list">' + glossItems("") + "</div></section>";
 }
 
 function render() {
   if (!state.company) return;
   var live = state.data.source === "live";
-  var main = "";
-  if (state.tab === "summary") main = renderKpi() + renderAnalysis();
-  else if (state.tab === "chart") main = renderChartTab();
-  else if (state.tab === "statements") main = renderStatements();
-  else main = renderGlossary();
-  $("#app").innerHTML = renderTop() + renderChips() + renderHero() + renderTabs() + main +
+  var body = ({ info: renderInfo, fin: renderFin, earn: renderEarn, div: renderDiv, peer: renderPeer, analyst: renderAnalyst, gloss: renderGlossary })[state.tab]();
+  $("#app").innerHTML = renderTop() + renderChips() + renderHead() + renderTabs() + body +
     '<footer class="foot">학습용 서비스이며 투자 권유가 아니에요. ' +
     (live ? "숫자는 SEC·DART 공시를 바탕으로 가져오며, 차입금 등 일부 항목은 대략적인 합계예요. 정확한 값은 공시 원문을 확인하세요." : "표시되는 숫자는 모두 샘플입니다.") +
     "<br>한국 증시 관례에 맞춰 상승은 빨강, 하락은 파랑으로 표시해요.</footer>";
-  if (state.tab === "chart") drawChart(); else if (chart) { chart.destroy(); chart = null; }
+  drawCharts();
 }
 
 function selectCompany(id) {
@@ -601,6 +893,7 @@ function closeSheet() { var s = $("#sheet"); if (s) s.remove(); }
 /* =====================================================================
    이벤트 (화면을 다시 그려도 계속 동작하도록 문서 전체에서 한 번만 등록)
    ===================================================================== */
+function toTabs() { var t = $(".tabs"); if (t && window.scrollY > t.offsetTop) window.scrollTo(0, t.offsetTop); }
 document.addEventListener("click", function (e) {
   var t = e.target;
   if (t.closest && t.closest(".sheet-back")) {
@@ -610,8 +903,14 @@ document.addEventListener("click", function (e) {
   var el;
   if ((el = t.closest("[data-term]"))) return openSheet(el.getAttribute("data-term"));
   if ((el = t.closest("[data-company]"))) { selectCompany(el.getAttribute("data-company")); return render(); }
-  if ((el = t.closest("[data-tab]"))) { state.tab = el.getAttribute("data-tab"); return render(); }
-  if ((el = t.closest("[data-chart]"))) { state.chartTab = el.getAttribute("data-chart"); return render(); }
+  if ((el = t.closest("[data-tab]"))) { state.tab = el.getAttribute("data-tab"); render(); return toTabs(); }
+  if ((el = t.closest("[data-stmt]"))) { state.stmt = el.getAttribute("data-stmt"); return render(); }
+});
+document.addEventListener("change", function (e) {
+  var k = e.target && e.target.getAttribute && e.target.getAttribute("data-sel");
+  if (!k) return;
+  state[k] = k === "metric" ? e.target.value : +e.target.value;
+  render();
 });
 document.addEventListener("input", function (e) {
   if (e.target && e.target.id === "gloss-q") $("#gloss-list").innerHTML = glossItems(e.target.value);
