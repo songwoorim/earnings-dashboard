@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>실적 번역기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* 토스 스타일 화이트 테마: 흰 배경, 큰 숫자, 둥근 모서리, 파란 포인트.
+   한국 증시 관례를 따라 상승은 빨강, 하락은 파랑으로 표시합니다. */
+:root {
+  --bg: #ffffff;
+  --bg-sub: #f2f4f6;
+  --text: #191f28;
+  --text2: #4e5968;
+  --text3: #8b95a1;
+  --line: #e5e8eb;
+  --blue: #3182f6;
+  --blue-deep: #1b64da;
+  --blue-soft: #e8f3ff;
+  --up: #f04452;
+  --down: #3182f6;
+  --warn: #e67700;
+  --warn-soft: #fff4e5;
+  --radius: 16px;
+  --gutter: max(20px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(20px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg-sub); color: var(--text);
+  font-family: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  line-height: 1.55; -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+.app { max-width: 600px; min-height: 100vh; margin: 0 auto; background: var(--bg); }
+.block { padding: 24px var(--gutter-r) 24px var(--gutter); min-width: 0; }
+.block + .block { border-top: 8px solid var(--bg-sub); }
+.block-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+.block-sub { font-size: 0.85rem; color: var(--text3); margin-bottom: 16px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px var(--gutter-r) 6px var(--gutter); }
+.brand { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: var(--blue); }
+.pill { font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--bg-sub); color: var(--text2); white-space: nowrap; }
+.pill.blue { background: var(--blue-soft); color: var(--blue-deep); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+
+.chips-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 8px var(--gutter-r) 14px var(--gutter); scrollbar-width: none; }
+.chips-scroll::-webkit-scrollbar { display: none; }
+.company-chip { flex: 0 0 auto; border: none; background: var(--bg-sub); color: var(--text2); border-radius: 999px; padding: 8px 14px; font-size: 0.88rem; font-weight: 600; display: inline-flex; align-items: baseline; gap: 6px; }
+.company-chip small { font-size: 0.68rem; font-weight: 600; color: var(--text3); }
+.company-chip.on { background: var(--text); color: #fff; }
+.company-chip.on small { color: #b0b8c1; }
+
+.hero { padding: 12px var(--gutter-r) 28px var(--gutter); }
+.hero-meta { font-size: 0.85rem; color: var(--text3); font-weight: 500; }
+.hero-label { margin-top: 18px; font-size: 0.95rem; color: var(--text2); font-weight: 500; }
+.hero-value { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-top: 2px; }
+.hero-delta { margin-top: 6px; font-size: 0.95rem; font-weight: 600; }
+.hero-delta .base { color: var(--text3); font-weight: 400; margin-right: 6px; }
+.up { color: var(--up); }
+.down { color: var(--down); }
+.hero-about { margin-top: 14px; font-size: 0.85rem; color: var(--text3); }
+
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; display: flex; gap: 4px; background: var(--bg); padding: 0 var(--gutter-r) 0 var(--gutter); border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: 1 0 auto; background: none; border: none; padding: 14px 8px; font-size: 0.95rem; font-weight: 600; color: var(--text3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tab.on { color: var(--text); border-bottom-color: var(--text); }
+
+.metric-list { display: flex; flex-direction: column; }
+.metric { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--bg-sub); }
+.metric:last-child { border-bottom: none; }
+.metric-left { min-width: 0; }
+.metric-name { font-size: 0.95rem; font-weight: 600; }
+.metric-easy { font-size: 0.8rem; color: var(--text3); margin-top: 2px; }
+.metric-right { text-align: right; flex: 0 0 auto; }
+.metric-value { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; }
+.metric-delta { font-size: 0.78rem; font-weight: 600; margin-top: 1px; }
+
+.analysis-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.analysis-head .block-title { margin: 0; }
+.headline { font-size: 1.3rem; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; text-wrap: balance; }
+.notice { margin-top: 12px; font-size: 0.78rem; color: var(--text3); background: var(--bg-sub); padding: 8px 12px; border-radius: 10px; }
+.bullets { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 10px; }
+.bullets li { position: relative; padding-left: 16px; font-size: 0.92rem; color: var(--text2); }
+.bullets li::before { content: ""; position: absolute; left: 2px; top: 0.65em; width: 5px; height: 5px; border-radius: 50%; background: var(--text3); }
+.pros-cons { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+@media (min-width: 520px) { .pros-cons { grid-template-columns: 1fr 1fr; } }
+.pc { background: var(--bg-sub); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.pc h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+.pc.pro h3 { color: var(--blue-deep); }
+.pc.con h3 { color: var(--warn); }
+.pc ul { margin: 0; padding-left: 16px; font-size: 0.86rem; color: var(--text2); display: flex; flex-direction: column; gap: 6px; }
+.tip { margin-top: 16px; background: var(--blue-soft); color: var(--blue-deep); border-radius: var(--radius); padding: 14px 16px; font-size: 0.88rem; }
+.tip strong { display: block; margin-bottom: 2px; }
+.disclaimer { margin-top: 14px; font-size: 0.74rem; color: var(--text3); }
+
+.seg { display: flex; background: var(--bg-sub); border-radius: 12px; padding: 4px; gap: 4px; margin: 12px 0 16px; }
+.seg button { flex: 1; border: none; background: none; padding: 8px 4px; border-radius: 9px; font-size: 0.85rem; font-weight: 600; color: var(--text3); }
+.seg button.on { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(25, 31, 40, 0.1); }
+.chart-box { position: relative; width: 100%; height: 280px; }
+.chart-help { font-size: 0.86rem; color: var(--text2); background: var(--bg-sub); border-radius: var(--radius); padding: 14px 16px; margin-top: 12px; }
+
+.table-wrap { overflow-x: auto; margin: 0 calc(var(--gutter-r) * -1) 0 calc(var(--gutter) * -1); }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; min-width: 640px; }
+th, td { padding: 11px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--bg-sub); font-variant-numeric: tabular-nums; }
+thead th { color: var(--text3); font-weight: 600; background: var(--bg); }
+th.sticky { position: sticky; left: 0; text-align: left; background: var(--bg); font-weight: 500; padding-left: var(--gutter); z-index: 1; }
+.section-row td { text-align: left; font-weight: 700; font-size: 0.8rem; background: var(--bg-sub); color: var(--text2); padding-left: var(--gutter); }
+td.neg { color: var(--down); }
+
+.search { width: 100%; border: none; background: var(--bg-sub); border-radius: 12px; padding: 12px 14px; font: inherit; font-size: 0.92rem; color: var(--text); margin-bottom: 8px; }
+.gloss { border-bottom: 1px solid var(--bg-sub); }
+.gloss summary { list-style: none; cursor: pointer; padding: 16px 0; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.95rem; }
+.gloss summary::-webkit-details-marker { display: none; }
+.gloss summary::after { content: "+"; color: var(--text3); font-size: 1.2rem; font-weight: 400; }
+.gloss[open] summary::after { content: "−"; }
+.gloss-body { padding: 0 0 16px; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text2); }
+.formula { background: var(--blue-soft); color: var(--blue-deep); border-radius: 10px; padding: 8px 12px; font-size: 0.82rem; font-weight: 600; }
+.example { font-size: 0.82rem; color: var(--text3); }
+.empty { padding: 24px 0; color: var(--text3); font-size: 0.9rem; }
+
+.term-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; text-align: inherit; cursor: help; text-decoration: underline dotted var(--text3); text-underline-offset: 4px; }
+.sheet-back { position: fixed; inset: 0; z-index: 100; background: rgba(25, 31, 40, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 600px; background: #fff; color: var(--text); border-radius: 24px 24px 0 0; padding: 28px max(24px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.sheet h3 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+.sheet p { font-size: 0.95rem; color: var(--text2); }
+.sheet .close { margin-top: 8px; border: none; background: var(--blue); color: #fff; font-weight: 700; font-size: 1rem; padding: 14px; border-radius: 14px; }
+
+.foot { padding: 24px var(--gutter-r) 40px var(--gutter); font-size: 0.75rem; color: var(--text3); text-align: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .sheet { animation: rise 0.22s ease-out; }
+  @keyframes rise { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+</style>
+</head>
+<body>
+<div id="app" class="app"><p class="block-sub" style="padding:24px 20px">불러오는 중…</p></div>
+
+<!-- 차트 라이브러리 (인터넷 연결 필요) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* =====================================================================
+   설정
+   ===================================================================== */
+// 실제 데이터 파일 (GitHub Actions 가 매일 만들어요). 없으면 아래 샘플을 보여줘요.
+var DATA_URL = "data/companies.json";
+// AI 분석을 만들어 주는 서버리스 함수 주소. 비워 두면 샘플/자동 요약을 써요. (3단계에서 연결)
+var ANALYSIS_ENDPOINT = "";
+
+/* =====================================================================
+   샘플 데이터 (가상의 회사)  단위: US = 백만 달러, KR = 억원
+   분기 필드: q 분기, revenue 매출, op 영업이익, net 순이익, assets 자산, liab 부채,
+             cash 현금, debt 차입금, ocf 영업현금흐름, capex 설비투자
+   ===================================================================== */
+var SAMPLE = [
+  { id: "NVCL", name: "노바클라우드 (샘플)", nameEn: "Nova Cloud Inc.", market: "US", currency: "USD", unitLabel: "백만 달러", sector: "클라우드 소프트웨어",
+    about: "기업용 클라우드 서비스를 구독 방식으로 파는 가상의 미국 회사",
+    quarters: [
+      { q: "2024Q3", revenue: 4200, op: 880, net: 720, assets: 18200, liab: 7400, cash: 5100, debt: 2800, ocf: 1100, capex: 260 },
+      { q: "2024Q4", revenue: 4450, op: 960, net: 790, assets: 18900, liab: 7500, cash: 5500, debt: 2800, ocf: 1180, capex: 270 },
+      { q: "2025Q1", revenue: 4600, op: 1010, net: 830, assets: 19600, liab: 7600, cash: 5900, debt: 2800, ocf: 1230, capex: 280 },
+      { q: "2025Q2", revenue: 4850, op: 1090, net: 900, assets: 20400, liab: 7800, cash: 6300, debt: 2800, ocf: 1300, capex: 300 },
+      { q: "2025Q3", revenue: 5100, op: 1180, net: 980, assets: 21300, liab: 8000, cash: 6800, debt: 2700, ocf: 1390, capex: 310 },
+      { q: "2025Q4", revenue: 5400, op: 1270, net: 1050, assets: 22200, liab: 8100, cash: 7300, debt: 2700, ocf: 1470, capex: 330 },
+      { q: "2026Q1", revenue: 5650, op: 1350, net: 1120, assets: 23100, liab: 8300, cash: 7800, debt: 2700, ocf: 1560, capex: 340 },
+      { q: "2026Q2", revenue: 5950, op: 1430, net: 1190, assets: 24200, liab: 8500, cash: 8400, debt: 2600, ocf: 1650, capex: 360 }
+    ] },
+  { id: "HRBR", name: "하버리테일 (샘플)", nameEn: "Harbor Retail Corp.", market: "US", currency: "USD", unitLabel: "백만 달러", sector: "대형 소매유통",
+    about: "전국에 대형 매장을 운영하는 가상의 미국 유통 회사 (연말 쇼핑 시즌에 매출이 몰림)",
+    quarters: [
+      { q: "2024Q3", revenue: 9800, op: 520, net: 330, assets: 41000, liab: 29500, cash: 2400, debt: 12500, ocf: 640, capex: 410 },
+      { q: "2024Q4", revenue: 12600, op: 810, net: 540, assets: 42500, liab: 30200, cash: 3100, debt: 12400, ocf: 1250, capex: 520 },
+      { q: "2025Q1", revenue: 9900, op: 480, net: 300, assets: 41500, liab: 29800, cash: 2500, debt: 12400, ocf: 600, capex: 400 },
+      { q: "2025Q2", revenue: 10100, op: 540, net: 350, assets: 41800, liab: 30000, cash: 2300, debt: 12600, ocf: 670, capex: 430 },
+      { q: "2025Q3", revenue: 10000, op: 500, net: 310, assets: 42000, liab: 30300, cash: 2200, debt: 12900, ocf: 560, capex: 440 },
+      { q: "2025Q4", revenue: 12900, op: 790, net: 520, assets: 43500, liab: 31000, cash: 2900, debt: 12800, ocf: 1180, capex: 560 },
+      { q: "2026Q1", revenue: 10200, op: 470, net: 290, assets: 42500, liab: 30900, cash: 2100, debt: 13200, ocf: 520, capex: 450 },
+      { q: "2026Q2", revenue: 10300, op: 460, net: 280, assets: 42800, liab: 31300, cash: 1900, debt: 13600, ocf: 480, capex: 470 }
+    ] },
+  { id: "HBSC", name: "한빛반도체 (샘플)", nameEn: "Hanbit Semiconductor", market: "KR", currency: "KRW", unitLabel: "억원", sector: "반도체",
+    about: "메모리 반도체를 만드는 가상의 한국 회사 (경기를 많이 타는 업종)",
+    quarters: [
+      { q: "2024Q3", revenue: 52000, op: 3100, net: 2400, assets: 380000, liab: 95000, cash: 62000, debt: 38000, ocf: 9800, capex: 11000 },
+      { q: "2024Q4", revenue: 47000, op: 900, net: 600, assets: 381000, liab: 96500, cash: 60500, debt: 40000, ocf: 7200, capex: 11500 },
+      { q: "2025Q1", revenue: 44000, op: -1200, net: -1500, assets: 379000, liab: 99000, cash: 57000, debt: 43000, ocf: 4100, capex: 10500 },
+      { q: "2025Q2", revenue: 46500, op: 500, net: 200, assets: 378500, liab: 100000, cash: 56000, debt: 44000, ocf: 5200, capex: 9800 },
+      { q: "2025Q3", revenue: 51000, op: 3200, net: 2500, assets: 381000, liab: 99500, cash: 58000, debt: 43000, ocf: 9500, capex: 9500 },
+      { q: "2025Q4", revenue: 58000, op: 7600, net: 6100, assets: 386000, liab: 100500, cash: 62000, debt: 41500, ocf: 14200, capex: 10000 },
+      { q: "2026Q1", revenue: 64000, op: 11800, net: 9400, assets: 394000, liab: 102000, cash: 68000, debt: 40000, ocf: 18500, capex: 11500 },
+      { q: "2026Q2", revenue: 69000, op: 15200, net: 12100, assets: 403000, liab: 104000, cash: 75000, debt: 38000, ocf: 22000, capex: 13000 }
+    ] },
+  { id: "BLMB", name: "푸른모빌리티 (샘플)", nameEn: "Blue Mobility", market: "KR", currency: "KRW", unitLabel: "억원", sector: "전기차·모빌리티",
+    about: "전기차를 만드는 가상의 한국 회사 (공장을 계속 짓느라 돈을 많이 쓰는 성장 단계)",
+    quarters: [
+      { q: "2024Q3", revenue: 28000, op: 1100, net: 700, assets: 190000, liab: 128000, cash: 21000, debt: 62000, ocf: 2400, capex: 5200 },
+      { q: "2024Q4", revenue: 30500, op: 1300, net: 800, assets: 197000, liab: 133000, cash: 22500, debt: 66000, ocf: 2900, capex: 6100 },
+      { q: "2025Q1", revenue: 31000, op: 1250, net: 650, assets: 203000, liab: 138000, cash: 20500, debt: 70000, ocf: 2200, capex: 6800 },
+      { q: "2025Q2", revenue: 33500, op: 1500, net: 900, assets: 211000, liab: 144000, cash: 21000, debt: 75000, ocf: 2600, capex: 7400 },
+      { q: "2025Q3", revenue: 35500, op: 1650, net: 1000, assets: 219000, liab: 150000, cash: 20000, debt: 80000, ocf: 2700, capex: 8000 },
+      { q: "2025Q4", revenue: 38500, op: 1900, net: 1150, assets: 228000, liab: 157000, cash: 21500, debt: 86000, ocf: 3300, capex: 8600 },
+      { q: "2026Q1", revenue: 40000, op: 1700, net: 900, assets: 236000, liab: 164000, cash: 19000, debt: 92000, ocf: 2400, capex: 9100 },
+      { q: "2026Q2", revenue: 43000, op: 2100, net: 1250, assets: 245000, liab: 171000, cash: 18500, debt: 98000, ocf: 3000, capex: 9500 }
+    ] }
+];
+
+/* =====================================================================
+   용어 사전 (입문자용). 화면 어디서든 용어를 누르면 쉬운 설명이 올라와요.
+   ===================================================================== */
+var GLOSSARY = {
+  revenue: { term: "매출액", easy: "회사가 물건이나 서비스를 팔아서 번 돈의 총합이에요. 아직 비용을 빼기 전 금액입니다.", example: "치킨집이 한 달 동안 손님에게 받은 돈이 3천만 원이면 매출은 3천만 원." },
+  op: { term: "영업이익", easy: "본업으로 번 돈에서 재료비·인건비·광고비 같은 본업 비용을 뺀 이익이에요. 회사의 '진짜 실력'을 볼 때 가장 많이 봅니다.", example: "매출 3천만 원 − 본업 비용 2천5백만 원 = 영업이익 5백만 원." },
+  net: { term: "순이익", easy: "세금, 이자, 기타 손익까지 모두 반영하고 최종적으로 회사에 남은 돈이에요. 주주 몫의 최종 성적표입니다.", example: "영업이익 5백만 원에서 이자·세금을 내고 3백5십만 원이 남았다면 순이익은 3백5십만 원." },
+  opMargin: { term: "영업이익률", easy: "100원을 팔았을 때 본업에서 몇 원이 남는지 보여주는 비율이에요. 높을수록 장사를 잘하는 회사입니다.", example: "영업이익률 20% = 100원 팔면 20원 남는 장사.", formula: "영업이익 ÷ 매출액 × 100" },
+  netMargin: { term: "순이익률", easy: "100원을 팔았을 때 최종적으로 몇 원이 남는지 보여주는 비율이에요.", example: "순이익률 8% = 100원 팔면 세금 등을 다 내고 8원이 남음.", formula: "순이익 ÷ 매출액 × 100" },
+  assets: { term: "자산", easy: "회사가 가진 재산 전부예요. 현금, 공장, 건물, 재고 등이 포함됩니다.", example: "가게 보증금 + 기계 + 통장 잔고를 모두 합친 것." },
+  liab: { term: "부채", easy: "나중에 갚아야 할 돈이에요. 은행 대출, 협력업체에 줄 돈 등이 있어요.", example: "가게를 열려고 은행에서 빌린 대출금." },
+  equity: { term: "자본", easy: "자산에서 부채를 뺀, 진짜 회사(주주) 몫의 재산이에요. '순자산'이라고도 해요.", example: "집값 5억 − 대출 2억 = 내 몫 3억.", formula: "자산 − 부채" },
+  debtRatio: { term: "부채비율", easy: "내 돈(자본) 대비 빚이 얼마나 되는지 보는 비율이에요. 너무 높으면 불경기에 위험할 수 있어요. 보통 100% 이하면 안정적, 200%를 넘으면 주의해서 봅니다(업종마다 달라요).", example: "자본 1억에 부채 2억이면 부채비율 200%.", formula: "부채 ÷ 자본 × 100" },
+  netDebt: { term: "순부채", easy: "빌린 돈(차입금)에서 가진 현금을 뺀 금액이에요. 마이너스면 빚보다 현금이 많은 '실질 무차입' 상태예요.", example: "대출 1억 − 통장 잔고 1.5억 = 순부채 −5천만 원 (여유로움).", formula: "차입금 − 현금" },
+  ocf: { term: "영업현금흐름", easy: "장사를 해서 실제로 통장에 들어온(나간) 현금이에요. 장부상 이익이 나도 돈을 못 받았으면 현금은 안 늘어요.", example: "물건을 외상으로 팔면 이익은 잡히지만 현금은 아직 없음." },
+  capex: { term: "설비투자 (CAPEX)", easy: "공장, 기계, 데이터센터처럼 오래 쓰는 시설에 쓴 돈이에요. 미래 성장을 위한 투자지만 현금이 많이 나갑니다.", example: "치킨집이 튀김기를 새로 사거나 2호점을 낸 비용." },
+  fcf: { term: "잉여현금흐름 (FCF)", easy: "장사로 번 현금에서 시설 투자비를 빼고 '자유롭게 쓸 수 있는' 돈이에요. 배당, 빚 갚기, 새 사업에 쓸 수 있는 여력을 보여줍니다.", example: "월 현금 300만 원 − 기계 구입 100만 원 = 자유롭게 쓸 돈 200만 원.", formula: "영업현금흐름 − 설비투자" },
+  yoy: { term: "YoY (전년 동기 대비)", easy: "작년 같은 분기와 비교한 증감률이에요. 계절 영향을 없애고 비교할 수 있어서 가장 많이 쓰입니다.", example: "2026년 2분기 매출을 2025년 2분기와 비교." },
+  qoq: { term: "QoQ (직전 분기 대비)", easy: "바로 앞 분기와 비교한 증감률이에요. 최근 흐름이 빨라지는지 느려지는지 볼 때 좋아요.", example: "2026년 2분기 매출을 2026년 1분기와 비교." }
+};
+
+/* =====================================================================
+   샘플 분석 (목업). 실제 AI 분석이 아니라 화면 설계용 예시예요.
+   ===================================================================== */
+var SAMPLE_ANALYSIS = {
+  NVCL: { quarter: "2026Q2", verdict: "good", headline: "매출·이익이 8분기 연속 늘었어요",
+    summary: ["매출이 1년 전보다 약 23% 늘었고, 영업이익률은 24% 수준을 유지했어요.", "벌어들인 현금(영업현금흐름)이 투자비보다 훨씬 커서 현금이 계속 쌓이고 있어요.", "빚보다 현금이 많아 재무 안정성이 높습니다."],
+    good: ["꾸준한 매출 성장", "높은 영업이익률", "현금 > 차입금 (순현금 상태)"],
+    concern: ["성장률이 높은 만큼 주가에 기대가 이미 반영돼 있을 수 있어요", "성장이 둔화되면 평가가 크게 흔들릴 수 있음"],
+    beginnerTip: "소프트웨어 회사는 한 번 만든 서비스를 여러 고객에게 팔 수 있어서 이익률이 높은 편이에요." },
+  HRBR: { quarter: "2026Q2", verdict: "caution", headline: "매출은 제자리, 이익은 조금씩 줄고 있어요",
+    summary: ["매출은 1년 전과 비슷하지만 영업이익률이 5.3%에서 4.5%로 내려갔어요.", "차입금은 늘고 현금은 줄어, 재무 부담이 커지는 방향이에요.", "영업현금흐름과 설비투자가 거의 같아서 남는 현금이 거의 없어요."],
+    good: ["연말 쇼핑 시즌(4분기)에 매출이 크게 늘어나는 안정적 패턴", "매출 규모 자체가 매우 큼"],
+    concern: ["이익률 하락 추세", "부채비율이 높고 계속 증가", "잉여현금흐름이 거의 0에 가까움"],
+    beginnerTip: "유통업은 박리다매(적게 남기고 많이 파는) 구조라서 이익률이 조금만 변해도 이익이 크게 달라져요. 분기마다 계절성이 있으니 '직전 분기'보다 '작년 같은 분기'와 비교하세요." },
+  HBSC: { quarter: "2026Q2", verdict: "good", headline: "반도체 경기가 살아나며 이익이 크게 늘었어요",
+    summary: ["작년 1분기 적자에서 벗어나 영업이익률이 약 22%까지 올랐어요.", "영업현금흐름이 설비투자를 크게 웃돌아 현금이 빠르게 늘고 있어요.", "차입금은 줄어들며 재무구조도 개선 중이에요."],
+    good: ["적자 → 큰 폭 흑자 전환", "현금 증가와 차입금 감소", "부채비율이 낮아 안정적"],
+    concern: ["반도체는 호황·불황이 반복되는 업종이라 지금의 높은 이익이 계속된다는 보장은 없어요", "설비투자가 다시 급증하면 현금 여력이 줄 수 있음"],
+    beginnerTip: "경기를 많이 타는 회사는 '이익이 가장 좋을 때'가 오히려 고점일 수 있어요. 한 분기가 아니라 여러 해의 흐름을 함께 보세요." },
+  BLMB: { quarter: "2026Q2", verdict: "caution", headline: "매출은 쑥쑥 크지만, 빚도 함께 빠르게 늘고 있어요",
+    summary: ["매출이 1년 전보다 약 28% 늘었고 영업이익도 흑자를 유지했어요.", "하지만 설비투자가 영업현금흐름보다 훨씬 커서 잉여현금흐름이 계속 마이너스예요.", "부족한 돈을 빌려서 채우다 보니 차입금과 부채비율이 계속 올라가고 있어요."],
+    good: ["빠른 매출 성장", "영업이익은 꾸준히 흑자"],
+    concern: ["부채비율이 200%를 넘어 계속 상승", "잉여현금흐름 적자가 이어짐", "금리가 오르면 이자 부담이 커질 수 있음"],
+    beginnerTip: "성장하는 회사는 공장을 짓느라 현금이 부족한 게 자연스러울 수 있어요. 다만 '투자가 언젠가 이익으로 돌아오는지'를 계속 확인해야 해요." }
+};
+
+/* =====================================================================
+   계산 도우미
+   ===================================================================== */
+function enrich(quarters) {
+  return quarters.map(function (d) {
+    var equity = d.assets - d.liab;
+    return Object.assign({}, d, {
+      equity: equity,
+      opMargin: (d.op / d.revenue) * 100,
+      netMargin: (d.net / d.revenue) * 100,
+      debtRatio: equity > 0 ? (d.liab / equity) * 100 : null,
+      netDebt: d.debt - d.cash,
+      fcf: d.ocf - d.capex
+    });
+  });
+}
+// 4분기 전(작년 같은 분기)과 비교한 증감률(%)
+function yoy(rows, i, key) {
+  if (i < 4) return null;
+  var prev = rows[i - 4][key];
+  if (!prev) return null;
+  return ((rows[i][key] - prev) / Math.abs(prev)) * 100;
+}
+function qoq(rows, i, key) {
+  if (i < 1) return null;
+  var prev = rows[i - 1][key];
+  if (!prev) return null;
+  return ((rows[i][key] - prev) / Math.abs(prev)) * 100;
+}
+// 금액 표시: 미국은 $M → $B, 한국은 억원 → 조원
+function fmtAmount(v, c) {
+  if (v == null || isNaN(v)) return "-";
+  var sign = v < 0 ? "-" : "", a = Math.abs(v);
+  if (c.market === "US") return a >= 1000 ? sign + "$" + (a / 1000).toFixed(1) + "B" : sign + "$" + Math.round(a).toLocaleString() + "M";
+  return a >= 10000 ? sign + (a / 10000).toFixed(1) + "조원" : sign + Math.round(a).toLocaleString() + "억원";
+}
+function fmtNum(v) { return v == null || isNaN(v) ? "-" : Math.round(v).toLocaleString(); }
+function fmtPct(v, d) { return v == null || isNaN(v) ? "-" : v.toFixed(d == null ? 1 : d) + "%"; }
+function fmtDelta(v) {
+  if (v == null || isNaN(v)) return null;
+  return (v > 0 ? "▲ " : v < 0 ? "▼ " : "– ") + Math.abs(v).toFixed(1) + "%";
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function fmtDate(iso) {
+  var d = new Date(iso);
+  if (!iso || isNaN(d.getTime())) return "";
+  return d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
+}
+
+// 지표별 "쉬운 한 줄 해석"
+function easyReading(key, r) {
+  if (key === "opMargin") return r.opMargin < 0 ? "100원 팔았는데 " + Math.abs(r.opMargin).toFixed(1) + "원 손해를 봤어요" : "100원 팔면 본업에서 " + r.opMargin.toFixed(1) + "원이 남아요";
+  if (key === "debtRatio") {
+    if (r.debtRatio == null) return "자본이 없거나 마이너스 상태예요";
+    var level = r.debtRatio < 100 ? "안정적인 편" : r.debtRatio < 200 ? "보통 수준" : "높은 편이라 주의";
+    return "내 돈 100원당 빚이 " + Math.round(r.debtRatio) + "원 · " + level;
+  }
+  if (key === "fcf") return r.fcf >= 0 ? "투자비를 쓰고도 자유롭게 쓸 현금이 남았어요" : "투자비가 벌어온 현금보다 커서 현금이 모자라요";
+  return "";
+}
+
+/* =====================================================================
+   자동 요약 (규칙 기반): 실제 회사에는 아직 AI 분석이 없어서 숫자만 보고 만들어요.
+   ===================================================================== */
+function ruleBased(company) {
+  var rows = enrich(company.quarters), i = rows.length - 1, last = rows[i];
+  var revYoy = yoy(rows, i, "revenue"), opYoy = yoy(rows, i, "op");
+  var marginDiff = i >= 4 ? last.opMargin - rows[i - 4].opMargin : null;
+  var pct = function (v) { return Math.abs(v).toFixed(1) + "%"; };
+  var summary = [], good = [], concern = [];
+
+  if (revYoy != null) {
+    if (revYoy >= 10) { summary.push("매출이 1년 전보다 " + pct(revYoy) + " 늘었어요."); good.push("매출이 빠르게 성장"); }
+    else if (revYoy >= 0) summary.push("매출이 1년 전보다 " + pct(revYoy) + " 조금 늘었어요.");
+    else { summary.push("매출이 1년 전보다 " + pct(revYoy) + " 줄었어요."); concern.push("매출 감소"); }
+  }
+  if (last.op < 0) { summary.push("본업에서 " + pct(last.opMargin) + "만큼 손실이 났어요 (영업적자)."); concern.push("영업적자"); }
+  else if (marginDiff != null) {
+    var dir = marginDiff >= 0.5 ? "올랐어요" : marginDiff <= -0.5 ? "내려갔어요" : "비슷해요";
+    summary.push("100원 팔면 " + last.opMargin.toFixed(1) + "원이 남아요. 1년 전보다 " + dir + ".");
+    if (marginDiff >= 0.5) good.push("영업이익률 개선");
+    if (marginDiff <= -0.5) concern.push("영업이익률 하락");
+  } else summary.push("100원 팔면 본업에서 " + last.opMargin.toFixed(1) + "원이 남아요.");
+  if (opYoy != null && last.op >= 0 && i >= 4 && rows[i - 4].op > 0 && opYoy >= 20) good.push("영업이익이 크게 증가");
+
+  if (last.fcf >= 0) { summary.push("투자비를 쓰고도 자유롭게 쓸 현금이 남았어요."); good.push("잉여현금흐름 플러스"); }
+  else { summary.push("투자비가 벌어온 현금보다 커서 현금이 모자라요."); concern.push("잉여현금흐름 마이너스"); }
+
+  if (last.netDebt < 0) good.push("빚보다 현금이 많은 상태");
+  if (last.debtRatio != null && last.debtRatio >= 200) concern.push("부채비율 200% 이상");
+  if (last.debtRatio != null && last.debtRatio < 100) good.push("부채비율이 낮아 안정적");
+  var q = qoq(rows, i, "revenue");
+  if (i >= 1 && q != null && Math.abs(q) >= 15) concern.push("직전 분기와 매출 차이가 커요 (계절성이나 업황 영향일 수 있어요)");
+
+  var headline;
+  if (last.op < 0) headline = "이번 분기는 본업에서 손실이 났어요";
+  else if (revYoy != null && revYoy >= 10 && (marginDiff == null ? 0 : marginDiff) >= -0.5) headline = "매출이 늘고 수익성도 유지되고 있어요";
+  else if (revYoy != null && revYoy < 0) headline = "매출이 1년 전보다 줄었어요";
+  else headline = "큰 변화 없이 안정적인 흐름이에요";
+
+  var hasRisk = concern.length > 0;
+  if (!good.length) good.push("눈에 띄는 강점은 아직 보이지 않아요");
+  if (!concern.length) concern.push("숫자상 특별한 위험 신호는 없어요");
+  return {
+    quarter: last.q, verdict: concern.length >= 2 && hasRisk ? "caution" : "good", headline: headline,
+    summary: summary, good: good, concern: concern,
+    beginnerTip: "이 요약은 숫자만 보고 정해진 규칙으로 만든 거예요. 업종 특성과 최근 뉴스까지 함께 봐야 정확해요. 계절을 타는 회사는 직전 분기보다 작년 같은 분기와 비교하세요.",
+    isAuto: true
+  };
+}
+
+// 분석 가져오기: 서버리스 함수(AI) → 샘플 분석 → 자동 요약 순서
+var analysisCache = {};
+function getAnalysis(c) {
+  if (ANALYSIS_ENDPOINT) {
+    if (analysisCache[c.id]) return analysisCache[c.id];
+    analysisCache[c.id] = { loading: true };
+    fetch(ANALYSIS_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ company: c.id, quarters: c.quarters }) })
+      .then(function (r) { if (!r.ok) throw new Error("분석 요청 실패 (" + r.status + ")"); return r.json(); })
+      .then(function (j) { analysisCache[c.id] = j; })
+      .catch(function (e) { analysisCache[c.id] = { error: e.message }; })
+      .then(function () { if (state.company && state.company.id === c.id) render(); });
+    return analysisCache[c.id];
+  }
+  if (SAMPLE_ANALYSIS[c.id]) return Object.assign({ isSample: true }, SAMPLE_ANALYSIS[c.id]);
+  return ruleBased(c);
+}
+
+/* =====================================================================
+   화면 그리기
+   ===================================================================== */
+var state = { data: null, company: null, rows: [], tab: "summary", chartTab: "profit" };
+var chart = null;
+var $ = function (s) { return document.querySelector(s); };
+
+function term(id, label) {
+  var g = GLOSSARY[id];
+  var text = label == null ? (g ? g.term : "") : label;
+  return g ? '<button type="button" class="term-btn" data-term="' + id + '">' + esc(text) + "</button>" : esc(text);
+}
+
+function renderTop() {
+  var live = state.data.source === "live";
+  return '<header class="top"><span class="brand">실적 번역기</span>' +
+    (live ? '<span class="pill blue">실제 데이터 · ' + esc(fmtDate(state.data.updatedAt)) + " 갱신</span>" : '<span class="pill">샘플 데이터</span>') + "</header>";
+}
+function renderChips() {
+  return '<nav class="chips-scroll" aria-label="기업 선택">' + state.data.companies.map(function (c) {
+    return '<button class="company-chip' + (c.id === state.company.id ? " on" : "") + '" data-company="' + esc(c.id) + '" aria-pressed="' + (c.id === state.company.id) + '">' +
+      esc(c.name.replace(/\s*\(샘플\)/, "")) + "<small>" + (c.market === "US" ? "미국" : "한국") + "</small></button>";
+  }).join("") + "</nav>";
+}
+function renderHero() {
+  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i], g = yoy(rows, i, "revenue");
+  return '<section class="hero" aria-label="요약"><p class="hero-meta">' + (c.market === "US" ? "미국" : "한국") + " · " + esc(c.id) + " · " + esc(c.sector) + "</p>" +
+    '<p class="hero-label">' + esc(last.q) + " " + term("revenue") + "</p>" +
+    '<p class="hero-value num">' + esc(fmtAmount(last.revenue, c)) + "</p>" +
+    (g != null ? '<p class="hero-delta num"><span class="base">1년 전보다</span><span class="' + (g > 0 ? "up" : "down") + '">' + fmtDelta(g) + "</span></p>" : "") +
+    '<p class="hero-about">' + esc(c.about) + "</p></section>";
+}
+function renderTabs() {
+  var tabs = [["summary", "요약"], ["chart", "차트"], ["statements", "재무제표"], ["glossary", "용어"]];
+  return '<div class="tabs" role="tablist">' + tabs.map(function (t) {
+    return '<button class="tab' + (state.tab === t[0] ? " on" : "") + '" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-tab="' + t[0] + '">' + t[1] + "</button>";
+  }).join("") + "</div>";
+}
+
+function renderKpi() {
+  var c = state.company, rows = state.rows, i = rows.length - 1, last = rows[i];
+  var opYoy = yoy(rows, i, "op");
+  var items = [
+    { id: "opMargin", value: fmtPct(last.opMargin), delta: fmtDelta(opYoy), up: opYoy > 0, easy: easyReading("opMargin", last) },
+    { id: "debtRatio", value: last.debtRatio == null ? "-" : Math.round(last.debtRatio) + "%", easy: easyReading("debtRatio", last) },
+    { id: "fcf", value: fmtAmount(last.fcf, c), easy: easyReading("fcf", last) },
+    { id: "net", value: fmtAmount(last.net, c), easy: "세금과 이자까지 낸 뒤 최종으로 남은 돈이에요" }
+  ];
+  return '<section class="block" aria-label="핵심 지표"><h2 class="block-title">' + esc(last.q) + ' 핵심 지표</h2><p class="block-sub">용어를 누르면 쉬운 설명이 나와요</p><div class="metric-list">' +
+    items.map(function (m) {
+      return '<div class="metric"><div class="metric-left"><div class="metric-name">' + term(m.id) + '</div><div class="metric-easy">' + esc(m.easy) + "</div></div>" +
+        '<div class="metric-right"><div class="metric-value num">' + esc(m.value) + "</div>" +
+        (m.delta ? '<div class="metric-delta num ' + (m.up ? "up" : "down") + '">' + m.delta + "</div>" : "") + "</div></div>";
+    }).join("") + "</div></section>";
+}
+
+function renderAnalysis() {
+  var a = getAnalysis(state.company);
+  if (a.loading) return '<section class="block"><p class="block-sub">분석 불러오는 중…</p></section>';
+  if (a.error) return '<section class="block"><p class="block-sub">분석을 불러오지 못했어요: ' + esc(a.error) + "</p></section>";
+  var v = { good: ["전반적으로 양호", "blue"], caution: ["주의해서 볼 점 있음", "warn"], bad: ["부진", "warn"] }[a.verdict] || ["전반적으로 양호", "blue"];
+  var li = function (arr) { return arr.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join(""); };
+  return '<section class="block" aria-label="실적 분석"><div class="analysis-head"><h2 class="block-title">' + esc(a.quarter) + ' 실적 분석</h2><span class="pill ' + v[1] + '">' + v[0] + "</span></div>" +
+    '<p class="headline">' + esc(a.headline) + "</p>" +
+    (a.isSample ? '<p class="notice">샘플 분석(목업)이에요. 이후 단계에서 AI 분석이 자동으로 생성돼요.</p>' : "") +
+    (a.isAuto ? '<p class="notice">숫자만 보고 규칙으로 만든 자동 요약이에요. AI 분석은 다음 단계에서 붙여요.</p>' : "") +
+    '<ul class="bullets">' + li(a.summary) + "</ul>" +
+    '<div class="pros-cons"><div class="pc pro"><h3>좋았던 점</h3><ul>' + li(a.good) + '</ul></div><div class="pc con"><h3>걱정되는 점</h3><ul>' + li(a.concern) + "</ul></div></div>" +
+    '<div class="tip"><strong>입문자 팁</strong>' + esc(a.beginnerTip) + "</div>" +
+    '<p class="disclaimer">투자 권유가 아닌 학습용 해설이에요. 투자 판단과 책임은 본인에게 있어요.</p></section>';
+}
+
+var CHART_TABS = [["profit", "매출·이익"], ["cash", "현금 흐름"], ["safety", "재무 안정성"]];
+function renderChartTab() {
+  var help = {
+    profit: "연한 파랑 막대(" + term("revenue") + ")가 커질 때 진한 파랑 막대(" + term("op") + ")도 같이 커지면 좋은 신호예요. 검은 선은 " + term("opMargin") + "로, 100원 팔 때 남는 돈이에요.",
+    cash: "파랑(" + term("ocf") + ")이 회색(" + term("capex") + ")보다 높으면 " + term("fcf") + "(검은 선)가 플러스예요. 낮으면 모자란 돈을 빌리거나 모아둔 현금으로 메워야 해요.",
+    safety: "파란 선(현금)이 점선(차입금)보다 위에 있으면 " + term("netDebt") + "가 마이너스예요. 빚보다 현금이 많은 든든한 상태예요."
+  }[state.chartTab];
+  return '<section class="block" aria-label="차트"><h2 class="block-title">최근 ' + state.rows.length + '분기 추이</h2><div class="seg" role="tablist">' +
+    CHART_TABS.map(function (t) {
+      return '<button role="tab" class="' + (state.chartTab === t[0] ? "on" : "") + '" aria-selected="' + (state.chartTab === t[0]) + '" data-chart="' + t[0] + '">' + t[1] + "</button>";
+    }).join("") + '</div><div class="chart-box"><canvas id="chart" role="img" aria-label="분기별 추이 차트"></canvas></div><p class="chart-help">' + help + "</p></section>";
+}
+
+function drawChart() {
+  if (chart) { chart.destroy(); chart = null; }
+  var canvas = $("#chart");
+  if (!canvas) return;
+  if (typeof Chart === "undefined") {
+    canvas.parentElement.innerHTML = '<p class="empty">차트를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</p>';
+    return;
+  }
+  var c = state.company, rows = state.rows;
+  var money = function (v) { return fmtAmount(v, c); };
+  var COL = { blue: "#3182f6", blueLight: "#b9d8ff", gray: "#b0b8c1", dark: "#191f28", mid: "#4e5968" };
+  var bar = function (label, key, color) { return { type: "bar", label: label, data: rows.map(function (r) { return r[key]; }), backgroundColor: color, borderRadius: 4, yAxisID: "y", order: 2 }; };
+  var line = function (label, key, color, o) {
+    return Object.assign({ type: "line", label: label, data: rows.map(function (r) { return r[key]; }), borderColor: color, backgroundColor: color, borderWidth: 2.5, pointRadius: 3, tension: 0, yAxisID: "y", order: 1 }, o || {});
+  };
+  var datasets, rightAxis = false;
+  if (state.chartTab === "profit") {
+    datasets = [bar("매출액", "revenue", COL.blueLight), bar("영업이익", "op", COL.blue), line("영업이익률", "opMargin", COL.dark, { yAxisID: "y1", borderWidth: 2 })];
+    rightAxis = true;
+  } else if (state.chartTab === "cash") {
+    datasets = [bar("영업현금흐름", "ocf", COL.blue), bar("설비투자", "capex", COL.gray), line("잉여현금흐름", "fcf", COL.dark, { borderWidth: 2 })];
+  } else {
+    datasets = [line("현금", "cash", COL.blue), line("차입금", "debt", COL.mid, { borderDash: [5, 4] })];
+  }
+  var tick = { color: "#8b95a1", font: { size: 11 }, maxRotation: 0 };
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  chart = new Chart(canvas, {
+    type: "bar",
+    data: { labels: rows.map(function (r) { return r.q.replace(/^20/, ""); }), datasets: datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8, font: { size: 12 }, color: "#4e5968", sort: function (a, b) { return a.datasetIndex - b.datasetIndex; } } },
+        tooltip: { callbacks: { label: function (ctx) { return ctx.dataset.label + ": " + (ctx.dataset.yAxisID === "y1" ? ctx.parsed.y.toFixed(1) + "%" : money(ctx.parsed.y)); } } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: tick, border: { display: false } },
+        y: { grid: { color: "#f2f4f6" }, border: { display: false }, ticks: Object.assign({ callback: money }, tick) },
+        y1: { display: rightAxis, position: "right", grid: { drawOnChartArea: false }, border: { display: false }, ticks: Object.assign({ callback: function (v) { return v + "%"; } }, tick) }
+      }
+    }
+  });
+}
+
+var SECTIONS = [
+  { title: "손익계산서 · 얼마나 벌었나", rows: [["revenue", "revenue"], ["op", "op"], ["net", "net"], ["opMargin", "opMargin", 1], ["netMargin", "netMargin", 1]] },
+  { title: "재무상태표 · 가진 것과 갚을 것", rows: [["assets", "assets"], ["liab", "liab"], ["equity", "equity"], ["debtRatio", "debtRatio", 0], [null, "cash", null, "현금"], [null, "debt", null, "차입금"], ["netDebt", "netDebt"]] },
+  { title: "현금흐름표 · 실제 들어온 현금", rows: [["ocf", "ocf"], ["capex", "capex"], ["fcf", "fcf"]] }
+];
+function renderStatements() {
+  var rows = state.rows, pctKeys = { opMargin: 1, netMargin: 1, debtRatio: 1 };
+  var head = "<tr><th class=\"sticky\">항목</th>" + rows.map(function (r) { return "<th>" + esc(r.q) + "</th>"; }).join("") + "</tr>";
+  var body = SECTIONS.map(function (s) {
+    return '<tbody><tr class="section-row"><td colspan="' + (rows.length + 1) + '">' + esc(s.title) + "</td></tr>" + s.rows.map(function (row) {
+      var id = row[0], key = row[1], digits = row[2], label = row[3];
+      return '<tr><th class="sticky" scope="row">' + (id ? term(id) : esc(label)) + "</th>" + rows.map(function (r) {
+        var v = r[key];
+        return '<td class="' + (typeof v === "number" && v < 0 ? "neg" : "") + '">' + (pctKeys[key] ? fmtPct(v, digits == null ? 1 : digits) : fmtNum(v)) + "</td>";
+      }).join("") + "</tr>";
+    }).join("") + "</tbody>";
+  }).join("");
+  return '<section class="block" aria-label="재무제표 표"><h2 class="block-title">재무제표 한눈에</h2><p class="block-sub">단위: ' + esc(state.company.unitLabel) +
+    ' · 옆으로 밀어서 볼 수 있어요</p><div class="table-wrap"><table><thead>' + head + "</thead>" + body + "</table></div></section>";
+}
+
+function glossItems(q) {
+  q = (q || "").trim().toLowerCase();
+  var items = Object.keys(GLOSSARY).filter(function (id) { var g = GLOSSARY[id]; return (g.term + g.easy).toLowerCase().indexOf(q) !== -1; });
+  if (!items.length) return '<p class="empty">검색 결과가 없어요.</p>';
+  return items.map(function (id) {
+    var g = GLOSSARY[id];
+    return '<details class="gloss"><summary>' + esc(g.term) + '</summary><div class="gloss-body"><p>' + esc(g.easy) + "</p>" +
+      (g.formula ? '<div class="formula">계산: ' + esc(g.formula) + "</div>" : "") + (g.example ? '<p class="example">예) ' + esc(g.example) + "</p>" : "") + "</div></details>";
+  }).join("");
+}
+function renderGlossary() {
+  return '<section class="block" aria-label="용어 사전"><h2 class="block-title">용어 사전</h2><p class="block-sub">입문자 기준으로 풀어 썼어요</p>' +
+    '<input id="gloss-q" class="search" type="search" placeholder="용어 검색 (예: 부채, 현금)"><div id="gloss-list">' + glossItems("") + "</div></section>";
+}
+
+function render() {
+  if (!state.company) return;
+  var live = state.data.source === "live";
+  var main = "";
+  if (state.tab === "summary") main = renderKpi() + renderAnalysis();
+  else if (state.tab === "chart") main = renderChartTab();
+  else if (state.tab === "statements") main = renderStatements();
+  else main = renderGlossary();
+  $("#app").innerHTML = renderTop() + renderChips() + renderHero() + renderTabs() + main +
+    '<footer class="foot">학습용 서비스이며 투자 권유가 아니에요. ' +
+    (live ? "숫자는 SEC·DART 공시를 바탕으로 가져오며, 차입금 등 일부 항목은 대략적인 합계예요. 정확한 값은 공시 원문을 확인하세요." : "표시되는 숫자는 모두 샘플입니다.") +
+    "<br>한국 증시 관례에 맞춰 상승은 빨강, 하락은 파랑으로 표시해요.</footer>";
+  if (state.tab === "chart") drawChart(); else if (chart) { chart.destroy(); chart = null; }
+}
+
+function selectCompany(id) {
+  var c = state.data.companies.filter(function (x) { return x.id === id; })[0];
+  if (!c) return;
+  state.company = c;
+  state.rows = enrich(c.quarters);
+}
+
+/* =====================================================================
+   용어 바텀시트
+   ===================================================================== */
+function openSheet(id) {
+  var g = GLOSSARY[id];
+  if (!g) return;
+  closeSheet();
+  var back = document.createElement("div");
+  back.className = "sheet-back";
+  back.id = "sheet";
+  back.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="' + esc(g.term) + '"><h3>' + esc(g.term) + "</h3><p>" + esc(g.easy) + "</p>" +
+    (g.formula ? '<div class="formula">계산: ' + esc(g.formula) + "</div>" : "") + (g.example ? '<p class="example">예) ' + esc(g.example) + "</p>" : "") +
+    '<button type="button" class="close">확인</button></div>';
+  document.body.appendChild(back);
+  back.querySelector(".close").focus();
+}
+function closeSheet() { var s = $("#sheet"); if (s) s.remove(); }
+
+/* =====================================================================
+   이벤트 (화면을 다시 그려도 계속 동작하도록 문서 전체에서 한 번만 등록)
+   ===================================================================== */
+document.addEventListener("click", function (e) {
+  var t = e.target;
+  if (t.closest && t.closest(".sheet-back")) {
+    if (t.classList.contains("sheet-back") || t.classList.contains("close")) closeSheet();
+    return;
+  }
+  var el;
+  if ((el = t.closest("[data-term]"))) return openSheet(el.getAttribute("data-term"));
+  if ((el = t.closest("[data-company]"))) { selectCompany(el.getAttribute("data-company")); return render(); }
+  if ((el = t.closest("[data-tab]"))) { state.tab = el.getAttribute("data-tab"); return render(); }
+  if ((el = t.closest("[data-chart]"))) { state.chartTab = el.getAttribute("data-chart"); return render(); }
+});
+document.addEventListener("input", function (e) {
+  if (e.target && e.target.id === "gloss-q") $("#gloss-list").innerHTML = glossItems(e.target.value);
+});
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+
+/* =====================================================================
+   시작: 실제 데이터 파일이 있으면 쓰고, 없으면(또는 파일을 더블클릭으로 연 경우) 샘플을 써요
+   ===================================================================== */
+function loadData() {
+  return fetch(DATA_URL, { cache: "no-cache" })
+    .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+    .then(function (j) {
+      if (!j || !Array.isArray(j.companies) || !j.companies.length) throw new Error("empty");
+      return { companies: j.companies, source: "live", updatedAt: j.updatedAt };
+    })
+    .catch(function () { return { companies: SAMPLE, source: "sample", updatedAt: null }; });
+}
+loadData().then(function (d) {
+  state.data = d;
+  selectCompany(d.companies[0].id);
+  render();
+});
+})();
+</script>
+</body>
+</html>
