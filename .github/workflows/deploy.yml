@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # GITHUB_TOKEN 으로 push 한 커밋은 위 push 트리거를 깨우지 못해서,
+  # 데이터 갱신이 끝나면 이 줄로 다시 배포해요.
+  workflow_run:
+    workflows: ["Update financial data"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # 빌드 과정이 없어요. 사이트에 필요한 파일(index.html, data/)만 골라서 올려요.
+      - name: Prepare site
+        run: |
+          mkdir _site
+          cp index.html _site/
+          if [ -d data ]; then cp -r data _site/; fi
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
